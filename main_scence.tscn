@@ -1,0 +1,686 @@
+[gd_scene load_steps=23 format=3 uid="uid://batucp71327kj"]
+
+[ext_resource type="Script" path="res://Script/Entire_screen.gd" id="1_cwvpk"]
+[ext_resource type="Script" path="res://Script/Edit_zone.gd" id="1_g4xl2"]
+[ext_resource type="Texture2D" uid="uid://bixyo63v8fsde" path="res://GAME ASSETS/v.0.1/Action Phase/mainboard_AP.png" id="1_ll7t3"]
+[ext_resource type="PackedScene" uid="uid://bgjx8npb5crik" path="res://Scence/Block_holder.tscn" id="2_87e1l"]
+[ext_resource type="PackedScene" uid="uid://dx00fnixi4mdg" path="res://Scence/block_letter.tscn" id="3_a30fl"]
+[ext_resource type="Texture2D" uid="uid://d12egm47pil4e" path="res://GAME ASSETS/v.0.1/Button/Button_green-02.png" id="5_3tq8m"]
+[ext_resource type="Texture2D" uid="uid://jjsycwnlevfj" path="res://GAME ASSETS/v.0.1/Button/Button_green-02_press.png" id="6_cp6r0"]
+[ext_resource type="FontFile" uid="uid://vbitfxhto6v6" path="res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf" id="7_1apl0"]
+[ext_resource type="Texture2D" uid="uid://pgcich64pjpq" path="res://GAME ASSETS/v.0.1/Setting/Board_setting-wood.png" id="8_5kwxs"]
+[ext_resource type="Texture2D" uid="uid://dwe2q81igby4d" path="res://GAME ASSETS/v.0.1/Setting/Wood_tittle.png" id="9_1rixt"]
+[ext_resource type="Texture2D" uid="uid://btmgfwjh6yw3k" path="res://GAME ASSETS/v.0.1/Setting/Board_setting-paper.png" id="10_txjfe"]
+[ext_resource type="Texture2D" uid="uid://qat3051psmml" path="res://GAME ASSETS/v.0.1/Button/Button_blue_Calendar.png" id="11_tk18m"]
+[ext_resource type="Texture2D" uid="uid://cjffi3xmta6o5" path="res://GAME ASSETS/v.0.1/Button/Button_blue_Calendar_press.png" id="12_lvuol"]
+[ext_resource type="FontFile" uid="uid://cba2sex33go7" path="res://GAME ASSETS/MilkyNice.ttf" id="13_el3s2"]
+[ext_resource type="Texture2D" uid="uid://dp8n7iwvyltk7" path="res://GAME ASSETS/v.0.1/Setting/Button_how to play.png" id="14_6ver5"]
+[ext_resource type="Texture2D" uid="uid://c3h5pv2c7rec0" path="res://GAME ASSETS/v.0.1/Setting/Button_close.png" id="14_tp5uu"]
+[ext_resource type="Texture2D" uid="uid://c052gyow5arvr" path="res://GAME ASSETS/v.0.1/Setting/Button_close_press.png" id="15_cx56a"]
+[ext_resource type="Texture2D" uid="uid://b2ftiy4s6ac5w" path="res://GAME ASSETS/v.0.1/Setting/Button_how to play_press.png" id="15_l006m"]
+[ext_resource type="Texture2D" uid="uid://bue528cciw2bw" path="res://GAME ASSETS/v.0.1/Tutorial/Hand.png" id="19_qjax1"]
+[ext_resource type="Texture2D" uid="uid://bk6ahfntc3yqd" path="res://GAME ASSETS/v.0.1/Action Phase/Block-type-active/Block_active_bottom.png" id="20_iy5ps"]
+[ext_resource type="Texture2D" uid="uid://dbski6vk7uqkq" path="res://GAME ASSETS/v.0.1/Tutorial/arrow_right.png" id="21_ibfij"]
+[ext_resource type="Texture2D" uid="uid://bcpaoxnueovi7" path="res://GAME ASSETS/v.0.1/Tutorial/arrow_left.png" id="22_riru8"]
+
+[node name="Main_scence" type="Node2D"]
+
+[node name="Entire_screen" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1200.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_cwvpk")
+
+[node name="Edit_zone" type="Control" parent="Entire_screen"]
+layout_mode = 1
+anchor_right = 0.63
+anchor_bottom = 0.958
+offset_right = 0.399902
+offset_bottom = 0.499878
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_g4xl2")
+block_holder = ExtResource("2_87e1l")
+block_letter = ExtResource("3_a30fl")
+metadata/_edit_lock_ = true
+
+[node name="Board_controller" type="Node" parent="Entire_screen/Edit_zone"]
+
+[node name="Background" type="NinePatchRect" parent="Entire_screen/Edit_zone"]
+layout_mode = 0
+offset_right = 1210.0
+offset_bottom = 1200.0
+texture = ExtResource("1_ll7t3")
+region_rect = Rect2(3, -1.5, 184, 611)
+patch_margin_left = 50
+patch_margin_top = 48
+patch_margin_right = 53
+patch_margin_bottom = 47
+
+[node name="Frontground" type="Control" parent="Entire_screen/Edit_zone"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" parent="Entire_screen/Edit_zone/Frontground" instance=ExtResource("3_a30fl")]
+visible = false
+layout_mode = 0
+
+[node name="Controll_zone" type="Control" parent="Entire_screen"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -709.0
+offset_top = -601.0
+offset_bottom = 594.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="chapter_select" type="NinePatchRect" parent="Entire_screen/Controll_zone"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -307.0
+offset_top = 192.0
+offset_right = 307.0
+offset_bottom = 669.0
+grow_horizontal = 2
+texture = ExtResource("8_5kwxs")
+patch_margin_left = 65
+patch_margin_top = 62
+patch_margin_right = 65
+patch_margin_bottom = 58
+
+[node name="Title" type="TextureRect" parent="Entire_screen/Controll_zone/chapter_select"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -213.0
+offset_top = -68.0
+offset_right = 229.0
+offset_bottom = 40.0
+grow_horizontal = 2
+texture = ExtResource("9_1rixt")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Entire_screen/Controll_zone/chapter_select/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 35
+text = "Chapter Level select"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="background" type="NinePatchRect" parent="Entire_screen/Controll_zone/chapter_select"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -301.5
+offset_top = -211.0
+offset_right = 301.5
+offset_bottom = 211.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_txjfe")
+patch_margin_left = 138
+patch_margin_top = 150
+patch_margin_right = 35
+patch_margin_bottom = 134
+
+[node name="label_chapter" type="Label" parent="Entire_screen/Controll_zone/chapter_select/background"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.5
+offset_top = -155.0
+offset_right = 171.5
+offset_bottom = -110.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.458824, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 35
+text = "Chapter"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="selected_chapter" type="LineEdit" parent="Entire_screen/Controll_zone/chapter_select/background/label_chapter"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.5
+offset_top = 23.5
+offset_right = 156.5
+offset_bottom = 72.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 34
+text = "Chapter0"
+placeholder_text = "chapter0, chapter1,..."
+alignment = 1
+
+[node name="btn_next_level" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_chapter"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 167.5
+offset_top = 18.0
+offset_right = 205.5
+offset_bottom = 82.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("21_ibfij")
+texture_pressed = ExtResource("19_qjax1")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="btn_prev_level2" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_chapter"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -202.5
+offset_top = 18.0
+offset_right = -164.5
+offset_bottom = 82.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("22_riru8")
+texture_pressed = ExtResource("19_qjax1")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="label_level" type="Label" parent="Entire_screen/Controll_zone/chapter_select/background"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -143.5
+offset_top = -31.0
+offset_right = 172.5
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.458824, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 35
+text = "Level"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="selected_level" type="LineEdit" parent="Entire_screen/Controll_zone/chapter_select/background/label_level"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -157.0
+offset_top = 22.5
+offset_right = 156.0
+offset_bottom = 71.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 34
+text = "1"
+placeholder_text = "1, 2, 3, ..."
+alignment = 1
+
+[node name="btn_next_chapter" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_level"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 167.0
+offset_top = 16.0
+offset_right = 205.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("21_ibfij")
+texture_pressed = ExtResource("19_qjax1")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="btn_prev_chapter" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_level"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -203.0
+offset_top = 17.0
+offset_right = -165.0
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.982766, 1.00288)
+texture_normal = ExtResource("22_riru8")
+texture_pressed = ExtResource("19_qjax1")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="btn_load" type="TextureButton" parent="Entire_screen/Controll_zone"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -173.5
+offset_top = 91.5
+offset_right = 174.5
+offset_bottom = 253.5
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("11_tk18m")
+texture_pressed = ExtResource("12_lvuol")
+
+[node name="Label" type="Label" parent="Entire_screen/Controll_zone/btn_load"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -38.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("13_el3s2")
+theme_override_font_sizes/font_size = 65
+text = "Load"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="btn_help" type="TextureButton" parent="Entire_screen/Controll_zone"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -131.0
+offset_top = 27.0
+offset_right = -22.0
+offset_bottom = 145.0
+grow_horizontal = 0
+texture_normal = ExtResource("14_6ver5")
+texture_pressed = ExtResource("15_l006m")
+stretch_mode = 0
+
+[node name="btn_save" type="TextureButton" parent="Entire_screen/Controll_zone"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -174.0
+offset_top = 418.0
+offset_right = 174.0
+offset_bottom = 576.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("5_3tq8m")
+texture_pressed = ExtResource("6_cp6r0")
+
+[node name="Label" type="Label" parent="Entire_screen/Controll_zone/btn_save"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -37.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 62
+text = "SAVE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Error" type="Label" parent="Entire_screen/Controll_zone"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1517.5
+offset_top = 629.5
+offset_right = -348.5
+offset_bottom = 674.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 35
+text = "Error here"
+
+[node name="Help_panel" type="NinePatchRect" parent="Entire_screen"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -554.5
+offset_top = -431.0
+offset_right = 554.5
+offset_bottom = 431.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("8_5kwxs")
+patch_margin_left = 65
+patch_margin_top = 62
+patch_margin_right = 65
+patch_margin_bottom = 58
+
+[node name="Close" type="TextureButton" parent="Entire_screen/Help_panel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -102.5
+offset_top = -64.0
+offset_right = 38.5
+offset_bottom = 82.0
+grow_horizontal = 0
+texture_normal = ExtResource("14_tp5uu")
+texture_pressed = ExtResource("15_cx56a")
+
+[node name="Title" type="TextureRect" parent="Entire_screen/Help_panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -288.5
+offset_top = -83.0
+offset_right = 288.5
+offset_bottom = 58.0
+grow_horizontal = 2
+texture = ExtResource("9_1rixt")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Entire_screen/Help_panel/Title"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -21.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 47
+text = "Help center"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="background" type="NinePatchRect" parent="Entire_screen/Help_panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -532.5
+offset_top = -356.5
+offset_right = 532.5
+offset_bottom = 404.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("10_txjfe")
+patch_margin_left = 138
+patch_margin_top = 150
+patch_margin_right = 35
+patch_margin_bottom = 134
+
+[node name="Help_text" type="Label" parent="Entire_screen/Help_panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 70.0
+offset_top = 89.0
+offset_right = -53.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.458824, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 35
+text = "Where to load and store file chapterN.json:
+
+1. Windows: %APPDATA%\\Godot\\app_userdata\\Level-editor
+2. macOS: ~/Library/Application Support/Godot/app_userdata/Level-editor
+4. Linux: ~/.local/share/godot/app_userdata/Level-editor"
+autowrap_mode = 2
+
+[node name="Drag_tut" type="Control" parent="Entire_screen/Help_panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -247.0
+offset_top = -188.0
+offset_right = -207.0
+offset_bottom = -148.0
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_group_ = true
+
+[node name="block" type="TextureRect" parent="Entire_screen/Help_panel/Drag_tut"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.5
+offset_top = -79.5
+offset_right = 23.5
+offset_bottom = 9.5
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_iy5ps")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Entire_screen/Help_panel/Drag_tut/block"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -38.5
+offset_right = 39.5
+offset_bottom = 31.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 48
+text = "W"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Hold_down" type="TextureRect" parent="Entire_screen/Help_panel/Drag_tut"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -37.0
+offset_right = 58.0
+offset_bottom = 63.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("19_qjax1")
+expand_mode = 1
+
+[node name="right_icon" type="TextureRect" parent="Entire_screen/Help_panel/Drag_tut"]
+layout_mode = 0
+offset_left = 45.0
+offset_top = -37.0
+offset_right = 85.0
+offset_bottom = 3.0
+texture = ExtResource("21_ibfij")
+expand_mode = 2
+
+[node name="left_icon" type="TextureRect" parent="Entire_screen/Help_panel/Drag_tut"]
+layout_mode = 0
+offset_left = -88.0
+offset_top = -37.0
+offset_right = -48.0
+offset_bottom = 3.0
+texture = ExtResource("22_riru8")
+expand_mode = 1
+
+[node name="Help_text" type="Label" parent="Entire_screen/Help_panel/Drag_tut"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -139.0
+offset_top = -109.0
+offset_right = 108.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.458824, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 35
+text = "Drag to move"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="Rotate_tut" type="Control" parent="Entire_screen/Help_panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 238.0
+offset_top = -188.0
+offset_right = 278.0
+offset_bottom = -148.0
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_group_ = true
+
+[node name="block" type="TextureRect" parent="Entire_screen/Help_panel/Rotate_tut"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -67.5
+offset_top = -26.5076
+offset_right = 23.5
+offset_bottom = 62.4924
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("20_iy5ps")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Entire_screen/Help_panel/Rotate_tut/block"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -52.0
+offset_top = 10.0076
+offset_right = 24.0
+offset_bottom = 80.0076
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -0.985771
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 48
+text = "W"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Hold_down" type="TextureRect" parent="Entire_screen/Help_panel/Rotate_tut"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -22.0
+offset_top = 19.0
+offset_right = 76.0
+offset_bottom = 119.0
+grow_horizontal = 2
+grow_vertical = 2
+rotation = -1.58077
+texture = ExtResource("19_qjax1")
+expand_mode = 1
+
+[node name="Help_text" type="Label" parent="Entire_screen/Help_panel/Rotate_tut"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -198.0
+offset_top = -109.0
+offset_right = 174.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.458824, 0, 0, 1)
+theme_override_fonts/font = ExtResource("7_1apl0")
+theme_override_font_sizes/font_size = 35
+text = "Right click to rotate"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[connection signal="pressed" from="Entire_screen/Controll_zone/chapter_select/background/label_level/btn_next_chapter" to="Entire_screen/Edit_zone" method="_on_btn_next_level_pressed"]
+[connection signal="pressed" from="Entire_screen/Controll_zone/chapter_select/background/label_level/btn_prev_chapter" to="Entire_screen/Edit_zone" method="_on_btn_prev_level_2_pressed"]
+[connection signal="pressed" from="Entire_screen/Controll_zone/btn_load" to="Entire_screen/Edit_zone" method="_on_btn_load_pressed"]
+[connection signal="pressed" from="Entire_screen/Controll_zone/btn_help" to="Entire_screen" method="_on_btn_help_pressed"]
+[connection signal="pressed" from="Entire_screen/Controll_zone/btn_save" to="Entire_screen/Edit_zone" method="_save_to_file"]
+[connection signal="pressed" from="Entire_screen/Help_panel/Close" to="Entire_screen" method="_on_close_pressed"]

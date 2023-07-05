@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgjx8npb5crik"]
+
+[ext_resource type="Texture2D" uid="uid://cvfaq4ky4326u" path="res://GAME ASSETS/v.0.1/Action Phase/Block_panel_reveal letter.png" id="1_c5618"]
+
+[node name="Block_holder" type="TextureRect"]
+offset_right = 50.0
+offset_bottom = 50.0
+texture = ExtResource("1_c5618")
+expand_mode = 1
