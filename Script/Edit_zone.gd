@@ -6,7 +6,14 @@ var block_holder: PackedScene
 @export
 var block_letter: PackedScene
 
-var label_error
+@export
+var responser: PackedScene
+
+var COLOR_CODE = {
+	"red": Color("#fa98a7"),
+	"green": Color("#73ffd7"),
+	"yellow": Color.LIGHT_GOLDENROD
+}
 
 
 var START_POSITION = Vector2(50, 50)
@@ -35,9 +42,12 @@ var SELECTED_CHAPTER = "chapter0"
 var SELECTED_LEVEL = 0
 var INDEX_SELECTED = ""
 
+var BOARD_LEGIT = false
 
 var Background
 var Frontground
+var BTN_save
+var Response_vertical_box
 # save / load data:
 # https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#editor-data-paths
 # BOARD[col][row] is for coordinate in Godot
@@ -56,7 +66,8 @@ func _ready():
 	
 	Background = $Background
 	Frontground = $Frontground
-	label_error = $"../Controll_zone/Error"
+	BTN_save = $"../Controll_zone/btn_save"
+	Response_vertical_box = $"../Error List"
 	
 	for r in range(0, SIZE.row):
 		var row = []
@@ -77,7 +88,6 @@ func _ready():
 #	_load_level(1)
 #	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
 	pass # Replace with function body.
-
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -116,7 +126,6 @@ func _input( event ):
 			_rotate()
 #			print(INDEX_STORE[selected_id])
 
-
 func _load_database(file_name):
 	var path = "user://" + file_name + ".json"
 #	print(path)
@@ -141,7 +150,6 @@ func _save_database(file_name):
 	file.close()
 #	DATA_BOARD = JSON.parse_string(content)
 
-
 func _load_level(selected_level):
 #    global SIZE_W, SIZE_H, BOARD, LEVEL_N_WORDS
 
@@ -156,8 +164,6 @@ func _load_level(selected_level):
 		LEVEL_N_WORDS.append(i.replace("\r","").to_upper())
 	
 #	print(BOARD)
-
-
 func _prepare_index_store():
 	# draw the board and convert to array, also create board of index
 	var row_ele_count = 0
@@ -205,7 +211,6 @@ func _prepare_index_store():
 			row_ele_count = 0
 			c_row += 1
 			c_col = 0
-
 
 
 func _scale_up():
@@ -285,12 +290,14 @@ func _print_level_edit():
 func _on_moused_exit_item(id):
 	if selected_id == id and not is_dragging:
 		selected_id = null
+#	_check_valid()
 
 
-func _on_moused_enter_item(id, letter):
+func _on_moused_enter_item(id):
 #	print("Entered " + str(id) + " " + letter)
 	if not is_dragging:
 		selected_id = id
+#	_check_valid()
 
 
 func _give_me_that_shit(chapter_id, level_id):
@@ -300,13 +307,14 @@ func _give_me_that_shit(chapter_id, level_id):
 	_scale_up()
 	_update_level_index()
 	_print_level_edit()
+	_check_valid()
 	selected_id = null
 
 
-func _update_new_pos(distance):
+func _update_new_pos(dist):
 	for mob in LIST_OF_BLOCK[selected_id]:
 		
-		mob.position += distance
+		mob.position += dist
 
 
 func _snaped_pos():
@@ -321,7 +329,12 @@ func _snaped_pos():
 #		print("r need to + " + str(LIST_OF_BLOCK[selected_id][i].position.y / 55 - INDEX_STORE[selected_id][i]["r"]))
 #		print("c need to + " + str(LIST_OF_BLOCK[selected_id][i].position.x / 55 - INDEX_STORE[selected_id][i]["c"]))
 #	print()
-	print(_check_valid())
+
+	_update_level_index()
+	_check_valid()
+#	print(_check_valid())
+	
+
 
 func _rotate():
 	var first_coor = INDEX_STORE[selected_id][0]
@@ -330,11 +343,13 @@ func _rotate():
 	if second_coor["r"] == first_coor["r"] + 1:
 #		print("Word in vertical")
 		_rotate_horizontal()
+		_check_valid()
 		return
 
 	if second_coor["c"] == first_coor["c"] + 1:
 #        print("Word in horizontal")
 		_rotate_vertical()
+		_check_valid()
 		return
 
 
@@ -453,7 +468,7 @@ func _save_to_file():
 
 				output_lv.append(_temp)
 
-	print(output_lv)
+#	print(output_lv)
 	var _temp_save = {
 		'w': bottom_most_coor,
 		'h': right_most_coor,
@@ -489,14 +504,36 @@ func _on_btn_prev_level_2_pressed():
 
 
 func _check_valid():
+#	all checking func should return string, then concatenate all string to final and detail error
+	_update_level_index()
 	
-#	check valid if:
-#		board ko tạo ra từ nào ko có trong list, theo Horizontal và Vertical
-#		board ko có 2 letter khác nhau trong cùng 1 vị trí	
+	var all_valid = true
+	var response_list = [
+		_check_overlap(),
+		_check_weird()
+	]
+	
+
+	for n in Response_vertical_box.get_children():
+		Response_vertical_box.remove_child(n)
+		n.queue_free()
+	
+	for res in response_list:
+		all_valid = all_valid and res['valid']
+		var debug = responser.instantiate()
+		debug.text = res['text']
+		debug.set("theme_override_colors/font_color", COLOR_CODE[res['color']])
+		Response_vertical_box.add_child(debug)
+
+	_set_legit(all_valid)
+
+func _check_overlap():
+	
+#	check overlap valid if:
+#		board ko có 2 letter khác nhau trong cùng 1 vị trí
 	
 
 	var current_letter_index = 0
-	
 	var next_letter_index = 0
 	
 	# check 2 letter ko trùng nhau trong cùng 1 vị trí
@@ -520,11 +557,19 @@ func _check_valid():
 #						print()
 						if next_letter_coor["r"] == letter_coor["r"] and next_letter_coor["c"] == letter_coor["c"]: # nếu trùng vị trí thì check value của 2 word
 							if not LEVEL_N_WORDS[int(i)][current_letter_index] == LEVEL_N_WORDS[int(j)][next_letter_index]:
-#								print(LEVEL_N_WORDS[int(i)][current_letter_index])
-#								print(LEVEL_N_WORDS[int(j)][next_letter_index])
-								_show_error("over_lap_letter")
-								print("Error here: " + LEVEL_N_WORDS[int(i)][current_letter_index] + " " + LEVEL_N_WORDS[int(j)][next_letter_index])
-								return false # return false if 2 letter cùng vị trí khác giá trị
+								
+								var cw = LEVEL_N_WORDS[int(i)]
+								var cl = LEVEL_N_WORDS[int(i)][current_letter_index]
+								var nw = LEVEL_N_WORDS[int(j)]
+								var nl = LEVEL_N_WORDS[int(j)][next_letter_index]
+								
+								var error_response = "overlap: `%s` in `%s` with `%s` in `%s`"
+												
+								return {
+									'valid': false,
+									'text': error_response % [cl, cw, nl, nw],
+									'color': "red"
+								} # return false if 2 letter cùng vị trí khác giá trị
 						else:
 							next_letter_index += 1 # move to next letter of next word
 #							continue
@@ -532,22 +577,82 @@ func _check_valid():
 						
 			current_letter_index += 1 # move to next letter of current word
 	
-	_show_error("it_fine_bro")
-	return true
+	return {
+		'valid': true,
+		'text': "Overlap: OK",
+		'color': "green"
+	}
+
+
+func _check_weird():
 	
+#	check weird valid if:
+#		board ko tạo ra từ nào ko có trong list, theo Horizontal và Vertical
+	
+#	1. loop through từng cell trong LEVEL_EDIT theo horizontal
+#	2. concatenate toàn bộ row
+#   3. split(" ") ra
+#	4. nếu word có trong list -> continue từ cell " " gần nhất
+#   5. nếu ko có trong list thì return fasle
+#
+#   lặp lại bước 1 với vertical
 
-func _show_error(error_code):
-	match error_code:
-		"over_lap_letter":
-#			print("2 or more Letters have been overlaped") 
-#			label_error.text = "2 or more Letters have been overlaped"
-			_update_error("2 or more Letters overlaped", "red")
-		"it_fine_bro":
-			print("It fine bro!")
-	pass
+#	check horizontal
+	for r in range(LEVEL_EDIT_SIZE):
+		var _temp_word = ""
+		for c in range(LEVEL_EDIT_SIZE):
+			_temp_word += LEVEL_EDIT[r][c]
+			# move to next empty cell
+			
+		var words_found = _temp_word.split(" ")
+		for current_word in words_found:
+			if len(current_word) == 1 or current_word == "":
+				pass
+			else:
+				if not current_word in LEVEL_N_WORDS:
+					var error_response = "Invalid word: %s"
+					return {
+						'valid': false,
+						'text': error_response % [current_word],
+						'color': "red"
+					}
 
+#	check vertical
+	for c in range(LEVEL_EDIT_SIZE):
+		var _temp_word = ""
+		for r in range(LEVEL_EDIT_SIZE):
+			_temp_word += LEVEL_EDIT[r][c]
+			# move to next empty cell
+			
+		var words_found = _temp_word.split(" ")
+		for current_word in words_found:
+			if len(current_word) == 1 or current_word == "":
+				pass
+			else:
+				if not current_word in LEVEL_N_WORDS:
+					var error_response = "Invalid word: %s"
+					return {
+						'valid': false,
+						'text': error_response % [current_word],
+						'color': "red"
+					}
+			
+	return {
+		'valid': true,
+		'text': "Invalid word: OK",
+		'color': "green"
+	}
 
-func _update_error(error_text, color):
-	label_error.text = error_text
-	label_error.set("theme_override_colors/font_color", Color(1, 0, 0))
-	pass
+#
+#func _update_error(error_text, color):
+#	Label_error.text = error_text
+#	Label_error.set("theme_override_colors/font_color", COLOR_CODE[color])
+#	pass
+#
+#
+func _set_legit(legit):
+	BOARD_LEGIT = legit
+	if BOARD_LEGIT:
+		BTN_save.visible = true
+	else :
+		BTN_save.visible = false
