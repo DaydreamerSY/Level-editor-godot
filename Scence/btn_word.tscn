@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3y5fska2av16"]
+
+[ext_resource type="Texture2D" uid="uid://dxchihu6pifcq" path="res://GAME ASSETS/button_green-01.png" id="1_ijtmn"]
+
+[node name="btn_word" type="TextureRect"]
+custom_minimum_size = Vector2(150, 2.08165e-12)
+texture = ExtResource("1_ijtmn")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

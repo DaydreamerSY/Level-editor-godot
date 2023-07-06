@@ -9,6 +9,9 @@ var block_letter: PackedScene
 @export
 var responser: PackedScene
 
+@export
+var btn_word: PackedScene
+
 var COLOR_CODE = {
 	"red": Color("#fa98a7"),
 	"green": Color("#79d97b"),
@@ -49,6 +52,7 @@ var BTN_save
 var Response_vertical_box
 var input_chapter
 var input_level
+var Wordlist_horizontal_box
 # save / load data:
 # https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#editor-data-paths
 # BOARD[col][row] is for coordinate in Godot
@@ -70,9 +74,10 @@ func _ready():
 	Background = $Background
 	Frontground = $Frontground
 	BTN_save = $"../Controll_zone/btn_save"
-	Response_vertical_box = $"../Error List"
+	Response_vertical_box = $"../Error_List"
 	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
 	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
+	Wordlist_horizontal_box = $"../Word_list"
 	
 	for r in range(0, SIZE.row):
 		var row = []
@@ -167,6 +172,16 @@ func _load_level(selected_level):
 	
 	for i in LIST_WORDS[selected_level].split(" - "):
 		LEVEL_N_WORDS.append(i.replace("\r","").to_upper())
+		
+		
+	for n in Wordlist_horizontal_box.get_children():
+		Wordlist_horizontal_box.remove_child(n)
+		n.queue_free()
+		
+	for w in LEVEL_N_WORDS:
+		var word = btn_word.instantiate()
+		word.get_node("Label").text = w
+		Wordlist_horizontal_box.add_child(word)
 	
 #	print(BOARD)
 func _prepare_index_store():
