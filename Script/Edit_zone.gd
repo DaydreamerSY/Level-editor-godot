@@ -77,7 +77,7 @@ func _ready():
 	Response_vertical_box = $"../Error_List"
 	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
 	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
-	Wordlist_horizontal_box = $"../Word_list"
+	Wordlist_horizontal_box = $Word_list
 	
 	for r in range(0, SIZE.row):
 		var row = []

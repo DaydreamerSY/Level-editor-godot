@@ -1,10 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://d3y5fska2av16"]
+[gd_scene load_steps=3 format=3 uid="uid://d3y5fska2av16"]
 
-[ext_resource type="Texture2D" uid="uid://dxchihu6pifcq" path="res://GAME ASSETS/button_green-01.png" id="1_ijtmn"]
+[ext_resource type="Texture2D" uid="uid://7kjyafnbdv3q" path="res://GAME ASSETS/v.0.1/Calendar/paper_bottom.png" id="1_h1wbt"]
+[ext_resource type="FontFile" uid="uid://vbitfxhto6v6" path="res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf" id="2_48ler"]
 
 [node name="btn_word" type="TextureRect"]
-custom_minimum_size = Vector2(150, 2.08165e-12)
-texture = ExtResource("1_ijtmn")
+custom_minimum_size = Vector2(200, 60)
+offset_right = 150.0
+offset_bottom = 60.0
+texture = ExtResource("1_h1wbt")
 expand_mode = 1
 
 [node name="Label" type="Label" parent="."]
@@ -12,5 +15,12 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_bottom = -6.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_colors/font_color = Color(0.513726, 0.34902, 0, 1)
+theme_override_fonts/font = ExtResource("2_48ler")
+theme_override_font_sizes/font_size = 35
+text = "12345678"
+horizontal_alignment = 1
+vertical_alignment = 1
