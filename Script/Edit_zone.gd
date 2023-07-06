@@ -11,14 +11,15 @@ var responser: PackedScene
 
 var COLOR_CODE = {
 	"red": Color("#fa98a7"),
-	"green": Color("#73ffd7"),
+	"green": Color("#79d97b"),
 	"yellow": Color.LIGHT_GOLDENROD
 }
 
 
 var START_POSITION = Vector2(50, 50)
 
-var SIZE = {"row": 20, "col": 20}
+var LEVEL_EDIT_SIZE = 20
+var SIZE = {"row": LEVEL_EDIT_SIZE, "col": LEVEL_EDIT_SIZE}
 var PADDING = {"top": 5, "right": 5, "bottom": 0, "left": 0}
 
 var BOARD_BG = []
@@ -36,8 +37,6 @@ var SIZE_H = 0
 var BOARD = []
 var LEVEL_N_WORDS = ""
 
-var LEVEL_EDIT_SIZE = 20
-
 var SELECTED_CHAPTER = "chapter0"
 var SELECTED_LEVEL = 0
 var INDEX_SELECTED = ""
@@ -48,6 +47,8 @@ var Background
 var Frontground
 var BTN_save
 var Response_vertical_box
+var input_chapter
+var input_level
 # save / load data:
 # https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#editor-data-paths
 # BOARD[col][row] is for coordinate in Godot
@@ -60,6 +61,8 @@ var current_mouspos_before_hold_down
 var is_dragging = false
 var distance = 0
 
+var RPAD_MIN_LENGTH = 10
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -68,6 +71,8 @@ func _ready():
 	Frontground = $Frontground
 	BTN_save = $"../Controll_zone/btn_save"
 	Response_vertical_box = $"../Error List"
+	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
+	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
 	
 	for r in range(0, SIZE.row):
 		var row = []
@@ -224,8 +229,8 @@ func _scale_up():
 		for y in range(LEVEL_EDIT_SIZE):
 			LEVEL_EDIT[x].append(" ")
 				
-	var start_point_row = int((SIZE.row - SIZE_W) / 2)
-	var start_point_col = int((SIZE.col - SIZE_H) / 2)
+	var start_point_row = int((SIZE.row - SIZE_H) / 2)
+	var start_point_col = int((SIZE.col - SIZE_W) / 2)
 	
 #	LIST_OF_BLOCK[selected_id][i].position = snapped(LIST_OF_BLOCK[selected_id][i].position, Vector2(55, 55))
 
@@ -482,16 +487,16 @@ func _save_to_file():
 
 
 func _on_btn_load_pressed():
-	SELECTED_CHAPTER = $"../Controll_zone/chapter_select/background/label_chapter/selected_chapter".text
-	SELECTED_LEVEL = float($"../Controll_zone/chapter_select/background/label_level/selected_level".text) - 1
+	SELECTED_CHAPTER = input_chapter.text
+	SELECTED_LEVEL = float(input_level.text) - 1
 	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
 
 
 func _on_btn_next_level_pressed():
-	if SELECTED_LEVEL < 100:
+	if SELECTED_LEVEL < 99:
 		SELECTED_LEVEL += 1
 		_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
-		$"../Controll_zone/chapter_select/background/label_level/selected_level".text = str(SELECTED_LEVEL + 1)
+		input_level.text = str(SELECTED_LEVEL + 1)
 	pass # Replace with function body.
 
 
@@ -499,7 +504,7 @@ func _on_btn_prev_level_2_pressed():
 	if SELECTED_LEVEL > 0:
 		SELECTED_LEVEL -= 1
 		_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
-		$"../Controll_zone/chapter_select/background/label_level/selected_level".text = str(SELECTED_LEVEL + 1)
+		input_level.text = str(SELECTED_LEVEL + 1)
 	pass # Replace with function body.
 
 
@@ -507,10 +512,13 @@ func _check_valid():
 #	all checking func should return string, then concatenate all string to final and detail error
 	_update_level_index()
 	
+	
 	var all_valid = true
 	var response_list = [
 		_check_overlap(),
-		_check_weird()
+		_check_weird(),
+		_check_enough_word(),
+		_check_size()
 	]
 	
 
@@ -526,6 +534,7 @@ func _check_valid():
 		Response_vertical_box.add_child(debug)
 
 	_set_legit(all_valid)
+
 
 func _check_overlap():
 	
@@ -563,7 +572,7 @@ func _check_overlap():
 								var nw = LEVEL_N_WORDS[int(j)]
 								var nl = LEVEL_N_WORDS[int(j)][next_letter_index]
 								
-								var error_response = "overlap: `%s` in `%s` with `%s` in `%s`"
+								var error_response = "Overlap:".rpad(RPAD_MIN_LENGTH, " ") + "`%s` in `%s` under `%s` in `%s`"
 												
 								return {
 									'valid': false,
@@ -579,7 +588,7 @@ func _check_overlap():
 	
 	return {
 		'valid': true,
-		'text': "Overlap: OK",
+		'text': "Overlap:".rpad(RPAD_MIN_LENGTH, " ") + "OK",
 		'color': "green"
 	}
 
@@ -610,7 +619,7 @@ func _check_weird():
 				pass
 			else:
 				if not current_word in LEVEL_N_WORDS:
-					var error_response = "Invalid word: %s"
+					var error_response = "Weirdo:".rpad(RPAD_MIN_LENGTH, " ") + "%s"
 					return {
 						'valid': false,
 						'text': error_response % [current_word],
@@ -630,7 +639,7 @@ func _check_weird():
 				pass
 			else:
 				if not current_word in LEVEL_N_WORDS:
-					var error_response = "Invalid word: %s"
+					var error_response = "Weirdo:".rpad(RPAD_MIN_LENGTH, " ") + "%s"
 					return {
 						'valid': false,
 						'text': error_response % [current_word],
@@ -639,17 +648,115 @@ func _check_weird():
 			
 	return {
 		'valid': true,
-		'text': "Invalid word: OK",
+		'text': "Weirdo:".rpad(RPAD_MIN_LENGTH, " ") + "OK",
 		'color': "green"
 	}
 
-#
-#func _update_error(error_text, color):
-#	Label_error.text = error_text
-#	Label_error.set("theme_override_colors/font_color", COLOR_CODE[color])
-#	pass
-#
-#
+
+func _check_enough_word():
+	
+	var all_words = []
+	
+	#	check horizontal
+	for r in range(LEVEL_EDIT_SIZE):
+		var _temp_word = ""
+		for c in range(LEVEL_EDIT_SIZE):
+			_temp_word += LEVEL_EDIT[r][c]
+			# move to next empty cell
+			
+		var words_found = _temp_word.split(" ")
+		for current_word in words_found:
+			if len(current_word) == 1 or current_word == "":
+				pass
+			else:
+				if current_word in LEVEL_N_WORDS:
+					all_words.append(current_word)
+
+#	check vertical
+	for c in range(LEVEL_EDIT_SIZE):
+		var _temp_word = ""
+		for r in range(LEVEL_EDIT_SIZE):
+			_temp_word += LEVEL_EDIT[r][c]
+			# move to next empty cell
+			
+		var words_found = _temp_word.split(" ")
+		for current_word in words_found:
+			if len(current_word) == 1 or current_word == "":
+				pass
+			else:
+				if current_word in LEVEL_N_WORDS:
+					all_words.append(current_word)
+					
+	if len(all_words) == len(LEVEL_N_WORDS):
+		return {
+			'valid': true,
+			'text': "Enough?:".rpad(RPAD_MIN_LENGTH, " ") + "OK",
+			'color': "green"
+		}
+	else:
+		for w in LEVEL_N_WORDS:
+			if w not in all_words:
+				return {
+					'valid': false,
+					'text': "Enough?:".rpad(RPAD_MIN_LENGTH, " ") + "%s is missing" % w,
+					'color': "red"
+				}
+	
+	return {
+		'valid': true,
+		'text': "Enough?".rpad(RPAD_MIN_LENGTH, " ") + "OK",
+		'color': "green"
+	}
+
+
+func _check_size():
+	var top_most_coor = LEVEL_EDIT_SIZE
+	var left_most_coor = LEVEL_EDIT_SIZE
+	var bottom_most_coor = 0
+	var right_most_coor = 0
+	
+	var _temp_index_score = INDEX_STORE.duplicate(true)
+	
+	for index in _temp_index_score:
+		for coor in _temp_index_score[index]:
+			if coor["r"] <= top_most_coor:
+				top_most_coor = coor["r"]
+
+			if coor["c"] <= left_most_coor:
+				left_most_coor = coor["c"]
+				
+				
+	# move all index in _temp_index_score to fit coor
+	for index in _temp_index_score:
+		for coor in _temp_index_score[index]:
+			coor["r"] -= top_most_coor
+			coor["c"] -= left_most_coor
+
+	for index in _temp_index_score:
+		for coor in _temp_index_score[index]:
+			if coor["r"] >= bottom_most_coor:
+				bottom_most_coor = coor["r"]
+
+			if coor["c"] >= right_most_coor:
+				right_most_coor = coor["c"]
+
+	right_most_coor += 1
+	bottom_most_coor += 1
+	
+	if right_most_coor > 12 or bottom_most_coor > 12:
+		return {
+			'valid': false,
+			'text': "WidxHei:".rpad(RPAD_MIN_LENGTH, " ") + "%sx%s" % [right_most_coor, bottom_most_coor],
+			'color': "red"
+		}
+	
+	return {
+		'valid': true,
+		'text': "Size:".rpad(RPAD_MIN_LENGTH, " ") + "%sx%s" % [right_most_coor, bottom_most_coor],
+		'color': "green"
+	}
+
+
 func _set_legit(legit):
 	BOARD_LEGIT = legit
 	if BOARD_LEGIT:

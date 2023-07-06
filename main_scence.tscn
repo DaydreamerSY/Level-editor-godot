@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://batucp71327kj"]
+[gd_scene load_steps=25 format=3 uid="uid://batucp71327kj"]
 
 [ext_resource type="Script" path="res://Script/Entire_screen.gd" id="1_cwvpk"]
 [ext_resource type="Script" path="res://Script/Edit_zone.gd" id="1_g4xl2"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://d12egm47pil4e" path="res://GAME ASSETS/v.0.1/Button/Button_green-02.png" id="5_3tq8m"]
 [ext_resource type="Texture2D" uid="uid://jjsycwnlevfj" path="res://GAME ASSETS/v.0.1/Button/Button_green-02_press.png" id="6_cp6r0"]
 [ext_resource type="FontFile" uid="uid://vbitfxhto6v6" path="res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf" id="7_1apl0"]
+[ext_resource type="Texture2D" uid="uid://covf7i4yqkfn7" path="res://GAME ASSETS/v.0.1/UI-Notifications/Mainboard-Pop up.png" id="7_puuvs"]
 [ext_resource type="Texture2D" uid="uid://pgcich64pjpq" path="res://GAME ASSETS/v.0.1/Setting/Board_setting-wood.png" id="8_5kwxs"]
 [ext_resource type="Texture2D" uid="uid://dwe2q81igby4d" path="res://GAME ASSETS/v.0.1/Setting/Wood_tittle.png" id="9_1rixt"]
 [ext_resource type="Texture2D" uid="uid://btmgfwjh6yw3k" path="res://GAME ASSETS/v.0.1/Setting/Board_setting-paper.png" id="10_txjfe"]
@@ -53,8 +54,10 @@ metadata/_edit_lock_ = true
 
 [node name="Background" type="NinePatchRect" parent="Entire_screen/Edit_zone"]
 layout_mode = 0
-offset_right = 1210.0
-offset_bottom = 1200.0
+offset_left = 2.0
+offset_top = 1.0
+offset_right = 1212.0
+offset_bottom = 1201.0
 texture = ExtResource("1_ll7t3")
 region_rect = Rect2(3, -1.5, 184, 611)
 patch_margin_left = 50
@@ -78,9 +81,9 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -709.0
-offset_top = -698.0
-offset_bottom = 497.0
+offset_left = -645.0
+offset_top = -701.0
+offset_bottom = 494.0
 grow_horizontal = 0
 grow_vertical = 2
 
@@ -94,11 +97,12 @@ offset_top = 192.0
 offset_right = 307.0
 offset_bottom = 669.0
 grow_horizontal = 2
-texture = ExtResource("8_5kwxs")
-patch_margin_left = 65
-patch_margin_top = 62
-patch_margin_right = 65
-patch_margin_bottom = 58
+texture = ExtResource("7_puuvs")
+region_rect = Rect2(0, 0, 190, 790)
+patch_margin_left = 134
+patch_margin_top = 72
+patch_margin_right = 136
+patch_margin_bottom = 80
 
 [node name="Title" type="TextureRect" parent="Entire_screen/Controll_zone/chapter_select"]
 layout_mode = 1
@@ -128,37 +132,17 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="background" type="NinePatchRect" parent="Entire_screen/Controll_zone/chapter_select"]
+[node name="label_chapter" type="Label" parent="Entire_screen/Controll_zone/chapter_select"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -287.5
-offset_top = -205.0
-offset_right = 287.5
-offset_bottom = 205.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("10_txjfe")
-region_rect = Rect2(11.8922, 1.4343, 259.829, 500.153)
-patch_margin_left = 119
-patch_margin_top = 150
-patch_margin_right = 35
-patch_margin_bottom = 111
-
-[node name="label_chapter" type="Label" parent="Entire_screen/Controll_zone/chapter_select/background"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -143.5
-offset_top = -155.0
-offset_right = 171.5
-offset_bottom = -110.0
+offset_left = -153.5
+offset_top = -177.0
+offset_right = 161.5
+offset_bottom = -132.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.458824, 0, 0, 1)
@@ -169,7 +153,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="selected_chapter" type="LineEdit" parent="Entire_screen/Controll_zone/chapter_select/background/label_chapter"]
+[node name="selected_chapter" type="LineEdit" parent="Entire_screen/Controll_zone/chapter_select/label_chapter"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -188,25 +172,7 @@ text = "Chapter0"
 placeholder_text = "chapter0, chapter1,..."
 alignment = 1
 
-[node name="btn_next_level" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_chapter"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 167.5
-offset_top = 18.0
-offset_right = 205.5
-offset_bottom = 82.0
-grow_horizontal = 2
-grow_vertical = 2
-texture_normal = ExtResource("21_ibfij")
-texture_pressed = ExtResource("19_qjax1")
-ignore_texture_size = true
-stretch_mode = 0
-
-[node name="btn_prev_level2" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_chapter"]
+[node name="btn_prev_chapter" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/label_chapter"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -224,17 +190,35 @@ texture_pressed = ExtResource("19_qjax1")
 ignore_texture_size = true
 stretch_mode = 0
 
-[node name="label_level" type="Label" parent="Entire_screen/Controll_zone/chapter_select/background"]
+[node name="btn_next_chapter" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/label_chapter"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -143.5
-offset_top = -31.0
-offset_right = 172.5
-offset_bottom = 14.0
+offset_left = 167.5
+offset_top = 18.0
+offset_right = 205.5
+offset_bottom = 82.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("21_ibfij")
+texture_pressed = ExtResource("19_qjax1")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="label_level" type="Label" parent="Entire_screen/Controll_zone/chapter_select"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -153.5
+offset_top = -53.0
+offset_right = 162.5
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.458824, 0, 0, 1)
@@ -245,7 +229,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 2
 
-[node name="selected_level" type="LineEdit" parent="Entire_screen/Controll_zone/chapter_select/background/label_level"]
+[node name="selected_level" type="LineEdit" parent="Entire_screen/Controll_zone/chapter_select/label_level"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -264,25 +248,7 @@ text = "1"
 placeholder_text = "1, 2, 3, ..."
 alignment = 1
 
-[node name="btn_next_chapter" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_level"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = 167.0
-offset_top = 16.0
-offset_right = 205.0
-offset_bottom = 80.0
-grow_horizontal = 2
-grow_vertical = 2
-texture_normal = ExtResource("21_ibfij")
-texture_pressed = ExtResource("19_qjax1")
-ignore_texture_size = true
-stretch_mode = 0
-
-[node name="btn_prev_chapter" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/background/label_level"]
+[node name="btn_prev_level" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/label_level"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -301,6 +267,24 @@ texture_pressed = ExtResource("19_qjax1")
 ignore_texture_size = true
 stretch_mode = 0
 
+[node name="btn_next_level" type="TextureButton" parent="Entire_screen/Controll_zone/chapter_select/label_level"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 167.0
+offset_top = 16.0
+offset_right = 205.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+texture_normal = ExtResource("21_ibfij")
+texture_pressed = ExtResource("19_qjax1")
+ignore_texture_size = true
+stretch_mode = 0
+
 [node name="btn_load" type="TextureButton" parent="Entire_screen/Controll_zone"]
 layout_mode = 1
 anchors_preset = 8
@@ -308,10 +292,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -131.0
-offset_top = 96.5
-offset_right = 131.0
-offset_bottom = 218.5
+offset_left = -192.5
+offset_top = -87.5
+offset_right = -12.5
+offset_bottom = -3.5
 grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("11_tk18m")
@@ -324,29 +308,14 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -38.0
+offset_bottom = -21.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("13_el3s2")
-theme_override_font_sizes/font_size = 65
+theme_override_font_sizes/font_size = 45
 text = "Load"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="btn_help" type="TextureButton" parent="Entire_screen/Controll_zone"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -114.0
-offset_top = 24.0
-offset_right = -22.0
-offset_bottom = 124.0
-grow_horizontal = 0
-texture_normal = ExtResource("14_6ver5")
-texture_pressed = ExtResource("15_l006m")
-ignore_texture_size = true
-stretch_mode = 0
 
 [node name="btn_save" type="TextureButton" parent="Entire_screen/Controll_zone"]
 layout_mode = 1
@@ -355,10 +324,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -131.0
-offset_top = 392.5
-offset_right = 131.0
-offset_bottom = 514.5
+offset_left = 30.5
+offset_top = -86.5
+offset_right = 210.5
+offset_bottom = -2.5
 grow_horizontal = 2
 grow_vertical = 2
 texture_normal = ExtResource("5_3tq8m")
@@ -371,14 +340,30 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -38.0
+offset_top = 2.0
+offset_bottom = -25.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_fonts/font = ExtResource("13_el3s2")
-theme_override_font_sizes/font_size = 65
+theme_override_font_sizes/font_size = 45
 text = "Save"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="btn_help" type="TextureButton" parent="Entire_screen/Controll_zone"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -101.0
+offset_top = 9.0
+offset_right = -9.0
+offset_bottom = 109.0
+grow_horizontal = 0
+texture_normal = ExtResource("14_6ver5")
+texture_pressed = ExtResource("15_l006m")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="Help_panel" type="NinePatchRect" parent="Entire_screen"]
 visible = false
@@ -674,15 +659,15 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 33.0
-offset_top = -192.0
-offset_right = 1179.0
-offset_bottom = -10.0
+offset_left = 1281.0
+offset_top = -696.0
+offset_right = 1904.0
+offset_bottom = -205.0
 grow_vertical = 0
 
-[connection signal="pressed" from="Entire_screen/Controll_zone/chapter_select/background/label_level/btn_next_chapter" to="Entire_screen/Edit_zone" method="_on_btn_next_level_pressed"]
-[connection signal="pressed" from="Entire_screen/Controll_zone/chapter_select/background/label_level/btn_prev_chapter" to="Entire_screen/Edit_zone" method="_on_btn_prev_level_2_pressed"]
+[connection signal="pressed" from="Entire_screen/Controll_zone/chapter_select/label_level/btn_prev_level" to="Entire_screen/Edit_zone" method="_on_btn_prev_level_2_pressed"]
+[connection signal="pressed" from="Entire_screen/Controll_zone/chapter_select/label_level/btn_next_level" to="Entire_screen/Edit_zone" method="_on_btn_next_level_pressed"]
 [connection signal="pressed" from="Entire_screen/Controll_zone/btn_load" to="Entire_screen/Edit_zone" method="_on_btn_load_pressed"]
-[connection signal="pressed" from="Entire_screen/Controll_zone/btn_help" to="Entire_screen" method="_on_btn_help_pressed"]
 [connection signal="pressed" from="Entire_screen/Controll_zone/btn_save" to="Entire_screen/Edit_zone" method="_save_to_file"]
+[connection signal="pressed" from="Entire_screen/Controll_zone/btn_help" to="Entire_screen" method="_on_btn_help_pressed"]
 [connection signal="pressed" from="Entire_screen/Help_panel/Close" to="Entire_screen" method="_on_close_pressed"]
