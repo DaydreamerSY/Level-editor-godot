@@ -24,3 +24,12 @@ func _on_Area2D_mouse_entered():
 	
 func _on_Area2D_mouse_exited():
 	you_are_exit.emit(id)
+
+func _set_active(is_active):
+	if is_active:
+		self.texture = load("res://GAME ASSETS/Block_blue.png")
+#		self.set("size", Vector2(60, 60))
+	else:
+		self.texture = load("res://GAME ASSETS/v.0.1/Action Phase/Block-type-active/Block_active_board.png")
+#		self.set("size", Vector2(50, 50))
+	pass

@@ -1,13 +1,15 @@
 [gd_scene load_steps=2 format=3 uid="uid://dboebxbkvbwmr"]
 
-[ext_resource type="FontFile" uid="uid://dt4pi070tehmf" path="res://Martian_Mono/static/MartianMono-SemiBold.ttf" id="1_s54gf"]
+[ext_resource type="FontFile" uid="uid://vbitfxhto6v6" path="res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf" id="1_ro0tj"]
 
 [node name="Responser" type="Label"]
+custom_minimum_size = Vector2(300, 50)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_fonts/font = ExtResource("1_s54gf")
-theme_override_font_sizes/font_size = 30
+theme_override_fonts/font = ExtResource("1_ro0tj")
+theme_override_font_sizes/font_size = 40
+text = "1234"
 autowrap_mode = 3

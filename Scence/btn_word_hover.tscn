@@ -1,0 +1,34 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3y5fska2av16"]
+
+[ext_resource type="Texture2D" uid="uid://7kjyafnbdv3q" path="res://GAME ASSETS/v.0.1/Calendar/paper_bottom.png" id="1_h1wbt"]
+[ext_resource type="FontFile" uid="uid://vbitfxhto6v6" path="res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf" id="2_48ler"]
+[ext_resource type="Script" path="res://Script/btn_word_hover.gd" id="2_jhvue"]
+
+[node name="btn_word" type="TextureRect"]
+custom_minimum_size = Vector2(200, 60)
+offset_right = 150.0
+offset_bottom = 60.0
+texture = ExtResource("1_h1wbt")
+expand_mode = 1
+script = ExtResource("2_jhvue")
+
+[node name="Letter" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.513726, 0.34902, 0, 1)
+theme_override_fonts/font = ExtResource("2_48ler")
+theme_override_font_sizes/font_size = 35
+text = "12345678 "
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ID" type="Label" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0

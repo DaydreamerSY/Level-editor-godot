@@ -12,6 +12,10 @@ var responser: PackedScene
 @export
 var btn_word: PackedScene
 
+#test screen size in window override
+#1100
+#800
+
 var COLOR_CODE = {
 	"red": Color("#fa98a7"),
 	"green": Color("#79d97b"),
@@ -40,7 +44,7 @@ var SIZE_H = 0
 var BOARD = []
 var LEVEL_N_WORDS = ""
 
-var SELECTED_CHAPTER = "chapter0"
+var SELECTED_CHAPTER = 0
 var SELECTED_LEVEL = 0
 var INDEX_SELECTED = ""
 
@@ -60,6 +64,7 @@ var Wordlist_horizontal_box
 
 var LIST_OF_BLOCK = {}
 var selected_id = null
+var hover_word_list_id = null
 var mouse_left_down = false
 var current_mouspos_before_hold_down
 var is_dragging = false
@@ -74,10 +79,13 @@ func _ready():
 	Background = $Background
 	Frontground = $Frontground
 	BTN_save = $"../Controll_zone/btn_save"
-	Response_vertical_box = $"../Error_List"
+#	Response_vertical_box = $"../Error_List"
+	Response_vertical_box = $"../Error_List_2"
 	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
 	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
-	Wordlist_horizontal_box = $Word_list
+#	Wordlist_horizontal_box = $Word_list
+	Wordlist_horizontal_box = $Word_list_2
+	
 	
 	for r in range(0, SIZE.row):
 		var row = []
@@ -90,13 +98,6 @@ func _ready():
 #			print("Install block " + str(mob.position.x) + ", " + str(mob.position.y))
 		BOARD_BG.append(row)
 
-	
-#	print(BOARD_BG[3][1])
-#	_set_letter(BOARD_BG[3][1], "A")
-#	_get_letter(BOARD_BG[3][1])
-#	_load_database("chapter0")
-#	_load_level(1)
-#	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -134,10 +135,10 @@ func _input( event ):
 	if event is InputEventMouseButton and not selected_id == null:
 		if event.button_index == 2 and event.is_pressed():
 			_rotate()
-#			print(INDEX_STORE[selected_id])
 
-func _load_database(file_name):
-	var path = "user://" + file_name + ".json"
+
+func _load_database(chapter):
+	var path = "user://Chapter%d.json" % [chapter]
 #	print(path)
 	var content = FileAccess.get_file_as_string(path)
 #	var content = file.get_file_as_string()
@@ -153,17 +154,17 @@ func _load_database(file_name):
 	LIST_WORDS = content.split("\n")
 
 
-func _save_database(file_name):
-	var path = "user://" + file_name + ".json"
+func _save_database(chapter):
+	var path = "user://Chapter%d.json" % [chapter]
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_line(JSON.stringify (DATA_BOARD, "\t"))
 	file.close()
-#	DATA_BOARD = JSON.parse_string(content)
+
 
 func _load_level(selected_level):
 #    global SIZE_W, SIZE_H, BOARD, LEVEL_N_WORDS
 
-	var level_n = LIST_LEVEL[selected_level]
+	var level_n = LIST_LEVEL[int(fmod(selected_level , 100))]
 	SIZE_W = level_n["h"]
 	SIZE_H = level_n["w"]
 	BOARD = level_n["b"]
@@ -178,12 +179,35 @@ func _load_level(selected_level):
 		Wordlist_horizontal_box.remove_child(n)
 		n.queue_free()
 		
+	var _i = 0
 	for w in LEVEL_N_WORDS:
 		var word = btn_word.instantiate()
-		word.get_node("Label").text = w
+		word.get_node("Letter").text = w
+		word.get_node("ID").text = str(_i)
+		_i += 1
+		
+		
+		word.connect("you_are_hover_on", _on_moused_enter_word_list_item)
+		word.connect("you_are_exit", _on_moused_exit_word_list_item)
+		
 		Wordlist_horizontal_box.add_child(word)
 	
-#	print(BOARD)
+
+func _on_moused_exit_word_list_item(id):
+	hover_word_list_id = null
+	_set_active_items(id, false)
+
+
+func _on_moused_enter_word_list_item(id):
+	hover_word_list_id = id
+	_set_active_items(id, true)
+
+
+func _set_active_items(id, is_active):
+	for letter in LIST_OF_BLOCK[id]:
+		letter._set_active(is_active)
+
+
 func _prepare_index_store():
 	# draw the board and convert to array, also create board of index
 	var row_ele_count = 0
@@ -305,19 +329,17 @@ func _print_level_edit():
 #		print(LIST_OF_BLOCK[i])
 
 	pass
-	
-	
+
+
 func _on_moused_exit_item(id):
 	if selected_id == id and not is_dragging:
 		selected_id = null
-#	_check_valid()
 
 
 func _on_moused_enter_item(id):
 #	print("Entered " + str(id) + " " + letter)
 	if not is_dragging:
 		selected_id = id
-#	_check_valid()
 
 
 func _give_me_that_shit(chapter_id, level_id):
@@ -352,8 +374,6 @@ func _snaped_pos():
 
 	_update_level_index()
 	_check_valid()
-#	print(_check_valid())
-	
 
 
 func _rotate():
@@ -494,7 +514,7 @@ func _save_to_file():
 		'h': right_most_coor,
 		'b': output_lv
 		}
-	DATA_BOARD["ListLevelsInChapter"][SELECTED_LEVEL] = _temp_save
+	DATA_BOARD["ListLevelsInChapter"][int(fmod(SELECTED_LEVEL , 100))] = _temp_save
 #	print(_temp_save)
 
 	_save_database(SELECTED_CHAPTER)
@@ -502,25 +522,11 @@ func _save_to_file():
 
 
 func _on_btn_load_pressed():
-	SELECTED_CHAPTER = input_chapter.text
 	SELECTED_LEVEL = float(input_level.text) - 1
+	SELECTED_CHAPTER = int(SELECTED_LEVEL) / int(100)
+	input_chapter.text = str(SELECTED_CHAPTER)
+	input_level.text = str(SELECTED_LEVEL + 1)
 	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
-
-
-func _on_btn_next_level_pressed():
-	if SELECTED_LEVEL < 99:
-		SELECTED_LEVEL += 1
-		_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
-		input_level.text = str(SELECTED_LEVEL + 1)
-	pass # Replace with function body.
-
-
-func _on_btn_prev_level_2_pressed():
-	if SELECTED_LEVEL > 0:
-		SELECTED_LEVEL -= 1
-		_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
-		input_level.text = str(SELECTED_LEVEL + 1)
-	pass # Replace with function body.
 
 
 func _check_valid():
@@ -543,10 +549,21 @@ func _check_valid():
 	
 	for res in response_list:
 		all_valid = all_valid and res['valid']
-		var debug = responser.instantiate()
-		debug.text = res['text']
-		debug.set("theme_override_colors/font_color", COLOR_CODE[res['color']])
-		Response_vertical_box.add_child(debug)
+		
+		var head = res['text'].split(":")[0]
+		var tail = res['text'].split(":")[1]
+		
+		var debug1 = responser.instantiate()
+		var debug2 = responser.instantiate()
+		
+		debug1.text = head
+		debug1.set("theme_override_colors/font_color", COLOR_CODE[res['color']])
+		
+		debug2.text = tail
+		debug2.set("theme_override_colors/font_color", COLOR_CODE[res['color']])
+		
+		Response_vertical_box.add_child(debug1)
+		Response_vertical_box.add_child(debug2)
 
 	_set_legit(all_valid)
 
@@ -559,6 +576,8 @@ func _check_overlap():
 
 	var current_letter_index = 0
 	var next_letter_index = 0
+	
+	var response_string = "Overlap:%s"
 	
 	# check 2 letter ko trùng nhau trong cùng 1 vị trí
 	for i in INDEX_STORE:
@@ -587,11 +606,11 @@ func _check_overlap():
 								var nw = LEVEL_N_WORDS[int(j)]
 								var nl = LEVEL_N_WORDS[int(j)][next_letter_index]
 								
-								var error_response = "Overlap:".rpad(RPAD_MIN_LENGTH, " ") + "`%s` in `%s` under `%s` in `%s`"
+								var error_response = "`%s` in `%s` under `%s` in `%s`"
 												
 								return {
 									'valid': false,
-									'text': error_response % [cl, cw, nl, nw],
+									'text': response_string % "`%s` in `%s` under `%s` in `%s`" % [cl, cw, nl, nw],
 									'color': "red"
 								} # return false if 2 letter cùng vị trí khác giá trị
 						else:
@@ -603,7 +622,7 @@ func _check_overlap():
 	
 	return {
 		'valid': true,
-		'text': "Overlap:".rpad(RPAD_MIN_LENGTH, " ") + "OK",
+		'text': response_string % "OK",
 		'color': "green"
 	}
 
@@ -621,6 +640,8 @@ func _check_weird():
 #
 #   lặp lại bước 1 với vertical
 
+	var response_string = "Weird word:%s"
+
 #	check horizontal
 	for r in range(LEVEL_EDIT_SIZE):
 		var _temp_word = ""
@@ -634,10 +655,9 @@ func _check_weird():
 				pass
 			else:
 				if not current_word in LEVEL_N_WORDS:
-					var error_response = "Weirdo:".rpad(RPAD_MIN_LENGTH, " ") + "%s"
 					return {
 						'valid': false,
-						'text': error_response % [current_word],
+						'text': response_string % [current_word],
 						'color': "red"
 					}
 
@@ -654,31 +674,31 @@ func _check_weird():
 				pass
 			else:
 				if not current_word in LEVEL_N_WORDS:
-					var error_response = "Weirdo:".rpad(RPAD_MIN_LENGTH, " ") + "%s"
 					return {
 						'valid': false,
-						'text': error_response % [current_word],
+						'text': response_string % [current_word],
 						'color': "red"
 					}
 			
 	return {
 		'valid': true,
-		'text': "Weirdo:".rpad(RPAD_MIN_LENGTH, " ") + "OK",
+		'text': response_string % "OK",
 		'color': "green"
 	}
 
 
 func _check_enough_word():
-	
+
 	var all_words = []
-	
+	var response_string = "Enough word:%s"
+
 	#	check horizontal
 	for r in range(LEVEL_EDIT_SIZE):
 		var _temp_word = ""
 		for c in range(LEVEL_EDIT_SIZE):
 			_temp_word += LEVEL_EDIT[r][c]
 			# move to next empty cell
-			
+
 		var words_found = _temp_word.split(" ")
 		for current_word in words_found:
 			if len(current_word) == 1 or current_word == "":
@@ -693,7 +713,7 @@ func _check_enough_word():
 		for r in range(LEVEL_EDIT_SIZE):
 			_temp_word += LEVEL_EDIT[r][c]
 			# move to next empty cell
-			
+
 		var words_found = _temp_word.split(" ")
 		for current_word in words_found:
 			if len(current_word) == 1 or current_word == "":
@@ -701,11 +721,11 @@ func _check_enough_word():
 			else:
 				if current_word in LEVEL_N_WORDS:
 					all_words.append(current_word)
-					
+
 	if len(all_words) == len(LEVEL_N_WORDS):
 		return {
 			'valid': true,
-			'text': "Enough?:".rpad(RPAD_MIN_LENGTH, " ") + "OK",
+			'text': response_string % "OK",
 			'color': "green"
 		}
 	else:
@@ -713,13 +733,13 @@ func _check_enough_word():
 			if w not in all_words:
 				return {
 					'valid': false,
-					'text': "Enough?:".rpad(RPAD_MIN_LENGTH, " ") + "%s is missing" % w,
+					'text': response_string % "%s is missing" % w,
 					'color': "red"
 				}
-	
+
 	return {
-		'valid': true,
-		'text': "Enough?".rpad(RPAD_MIN_LENGTH, " ") + "OK",
+		'valid': false,
+		'text': response_string % "OK",
 		'color': "green"
 	}
 
@@ -729,18 +749,18 @@ func _check_size():
 	var left_most_coor = LEVEL_EDIT_SIZE
 	var bottom_most_coor = 0
 	var right_most_coor = 0
-	
+
+	var response_string = "Size:%s"
+
 	var _temp_index_score = INDEX_STORE.duplicate(true)
-	
+
 	for index in _temp_index_score:
 		for coor in _temp_index_score[index]:
 			if coor["r"] <= top_most_coor:
 				top_most_coor = coor["r"]
-
 			if coor["c"] <= left_most_coor:
 				left_most_coor = coor["c"]
-				
-				
+
 	# move all index in _temp_index_score to fit coor
 	for index in _temp_index_score:
 		for coor in _temp_index_score[index]:
@@ -751,23 +771,22 @@ func _check_size():
 		for coor in _temp_index_score[index]:
 			if coor["r"] >= bottom_most_coor:
 				bottom_most_coor = coor["r"]
-
 			if coor["c"] >= right_most_coor:
 				right_most_coor = coor["c"]
 
 	right_most_coor += 1
 	bottom_most_coor += 1
-	
+
 	if right_most_coor > 12 or bottom_most_coor > 12:
 		return {
 			'valid': false,
-			'text': "WidxHei:".rpad(RPAD_MIN_LENGTH, " ") + "%sx%s" % [right_most_coor, bottom_most_coor],
+			'text': response_string % "%sx%s" % [right_most_coor, bottom_most_coor],
 			'color': "red"
 		}
-	
+
 	return {
 		'valid': true,
-		'text': "Size:".rpad(RPAD_MIN_LENGTH, " ") + "%sx%s" % [right_most_coor, bottom_most_coor],
+		'text': response_string % "%sx%s" % [right_most_coor, bottom_most_coor],
 		'color': "green"
 	}
 
@@ -778,3 +797,43 @@ func _set_legit(legit):
 		BTN_save.visible = true
 	else :
 		BTN_save.visible = false
+
+
+func _on_btn_next_level_pressed():
+#	if SELECTED_LEVEL < 99:
+	SELECTED_LEVEL += 1
+	if SELECTED_LEVEL == 100:
+		SELECTED_CHAPTER += 1
+		input_chapter.text = str(SELECTED_CHAPTER)
+	input_level.text = str(SELECTED_LEVEL + 1)
+	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
+	pass # Replace with function body.
+
+
+func _on_btn_prev_level_2_pressed():
+	if SELECTED_LEVEL > 0:
+		SELECTED_LEVEL -= 1
+		SELECTED_CHAPTER = int(SELECTED_LEVEL) / int(100)
+		input_chapter.text = str(SELECTED_CHAPTER)
+		input_level.text = str(SELECTED_LEVEL + 1)
+		_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
+	pass # Replace with function body.
+
+
+func _on_btn_prev_chapter_pressed():
+	if SELECTED_CHAPTER > 0:
+		SELECTED_CHAPTER -= 1
+		SELECTED_LEVEL = SELECTED_CHAPTER * 100
+		input_chapter.text = str(SELECTED_CHAPTER)
+		input_level.text = str(SELECTED_LEVEL + 1)
+		_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
+	pass # Replace with function body.
+
+
+func _on_btn_next_chapter_pressed():
+	SELECTED_CHAPTER += 1
+	SELECTED_LEVEL = SELECTED_CHAPTER * 100
+	input_chapter.text = str(SELECTED_CHAPTER)
+	input_level.text = str(SELECTED_LEVEL + 1)
+	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
+	pass # Replace with function body.
