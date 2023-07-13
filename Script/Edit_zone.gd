@@ -86,6 +86,16 @@ var sfx_invalid
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
+	print(OS.get_name())
+	if OS.get_name() == "macOS":
+		print("Resize window")
+		ProjectSettings.set_setting("display/window/size/window_height_override", 1100)
+		ProjectSettings.set_setting("display/window/size/window_width_override", 800)
+		ProjectSettings.set_setting("display/window/size/window_height", 1100)
+		ProjectSettings.set_setting("display/window/size/window_width", 300)
+		DisplayServer.window_set_size(Vector2(1100,800))
+
+	
 	Background = $Background
 	Frontground = $Frontground
 	BTN_save = $"../Controll_zone/btn_save"
