@@ -1,20 +1,20 @@
 extends Control
 
-@export
-var block_holder: PackedScene
+@export var block_holder: PackedScene
+@export var block_letter: PackedScene
+@export var responser: PackedScene
+@export var btn_word: PackedScene
 
-@export
-var block_letter: PackedScene
-
-@export
-var responser: PackedScene
-
-@export
-var btn_word: PackedScene
 
 #test screen size in window override
 #1100
 #800
+
+# default setting
+var SETTING = {
+	"showBackground": false, # if false, showBlockHolder false too (even it set to true)
+	"showBlockHolder": true,
+}
 
 var COLOR_CODE = {
 	"red": Color("#fa98a7"),
@@ -49,14 +49,6 @@ var SELECTED_LEVEL = 0
 var INDEX_SELECTED = ""
 
 var BOARD_LEGIT = false
-
-var Background
-var Frontground
-var BTN_save
-var Response_vertical_box
-var input_chapter
-var input_level
-var Wordlist_horizontal_box
 # save / load data:
 # https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html#editor-data-paths
 # BOARD[col][row] is for coordinate in Godot
@@ -73,30 +65,54 @@ var distance = 0
 var RPAD_MIN_LENGTH = 10
 
 
+# var of UI
+var Background
+var Frontground
+var BTN_save
+var Response_vertical_box
+var input_chapter
+var input_level
+var Wordlist_horizontal_box
+
+# SFX/BGM
+var sfx_Card_pick
+var sfx_Card_drop
+var sfx_Btn_click
+var sfx_Rotate
+var sfx_invalid
+
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
 	Background = $Background
 	Frontground = $Frontground
 	BTN_save = $"../Controll_zone/btn_save"
-#	Response_vertical_box = $"../Error_List"
-	Response_vertical_box = $"../Error_List_2"
+	Response_vertical_box = $"../NinePatchRect/Error_List"
 	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
 	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
-#	Wordlist_horizontal_box = $Word_list
 	Wordlist_horizontal_box = $Word_list_2
 	
+	sfx_Card_pick = $"../../Sound/SFX/Card_pick"
+	sfx_Card_drop = $"../../Sound/SFX/Card_drop"
+	sfx_Btn_click = $"../../Sound/SFX/Btn_click"
+	sfx_Rotate = $"../../Sound/SFX/Card_shuffle"
+	sfx_invalid = $"../../Sound/SFX/Word_invalid"
 	
-	for r in range(0, SIZE.row):
-		var row = []
-		for c in range(0, SIZE.col):
-			var mob = block_holder.instantiate()
-			mob.position = Vector2((START_POSITION.x + PADDING.top) * (c + 1), 
-				(START_POSITION.y + PADDING.right) * (r + 1))
-			Background.add_child(mob)
-			row.append(mob)
-#			print("Install block " + str(mob.position.x) + ", " + str(mob.position.y))
-		BOARD_BG.append(row)
+	Background.visible = SETTING["showBackground"]
+	
+	if SETTING["showBlockHolder"]:
+		for r in range(0, SIZE.row):
+			var row = []
+			for c in range(0, SIZE.col):
+				var mob = block_holder.instantiate()
+				mob.position = Vector2((START_POSITION.x + PADDING.top) * (c + 1), 
+					(START_POSITION.y + PADDING.right) * (r + 1))
+				Background.add_child(mob)
+				row.append(mob)
+	#			print("Install block " + str(mob.position.x) + ", " + str(mob.position.y))
+			BOARD_BG.append(row)
 
 	pass # Replace with function body.
 
@@ -105,6 +121,8 @@ func _process(delta):
 	if mouse_left_down and not selected_id == null: # Left click hold dowm
 #		print("you are holding " + LEVEL_N_WORDS[selected_id])
 #		print(get_viewport().get_mouse_position())
+
+		_set_active_items(selected_id, true)
 		
 		if not is_dragging:
 			is_dragging = true
@@ -122,19 +140,23 @@ func _process(delta):
 		if is_dragging:
 			is_dragging = false
 			distance = 0
+			_set_active_items(selected_id, false)
 			_snaped_pos()
 
 
 func _input( event ):
-	if event is InputEventMouseButton:
+	if event is InputEventMouseButton and not selected_id == null:
 		if event.button_index == 1 and event.is_pressed():
 			mouse_left_down = true
+			_play_sound("pick")
 		elif event.button_index == 1 and not event.is_pressed():
 			mouse_left_down = false
+			_play_sound("drop")
 			
 	if event is InputEventMouseButton and not selected_id == null:
 		if event.button_index == 2 and event.is_pressed():
 			_rotate()
+			_play_sound("rotate")
 
 
 func _load_database(chapter):
@@ -169,11 +191,14 @@ func _load_level(selected_level):
 	SIZE_H = level_n["w"]
 	BOARD = level_n["b"]
 	
+	print(BOARD)
+	
 	LEVEL_N_WORDS = []
 	
 	for i in LIST_WORDS[selected_level].split(" - "):
 		LEVEL_N_WORDS.append(i.replace("\r","").to_upper())
 		
+	print(LEVEL_N_WORDS)
 		
 	for n in Wordlist_horizontal_box.get_children():
 		Wordlist_horizontal_box.remove_child(n)
@@ -203,9 +228,9 @@ func _on_moused_enter_word_list_item(id):
 	_set_active_items(id, true)
 
 
-func _set_active_items(id, is_active):
+func _set_active_items(id, is_active, type=1):
 	for letter in LIST_OF_BLOCK[id]:
-		letter._set_active(is_active)
+		letter._set_active(is_active, type)
 
 
 func _prepare_index_store():
@@ -566,6 +591,8 @@ func _check_valid():
 		Response_vertical_box.add_child(debug2)
 
 	_set_legit(all_valid)
+	if not all_valid:
+		_play_sound("error")
 
 
 func _check_overlap():
@@ -800,7 +827,7 @@ func _set_legit(legit):
 
 
 func _on_btn_next_level_pressed():
-#	if SELECTED_LEVEL < 99:
+	_play_sound("click")
 	SELECTED_LEVEL += 1
 	if SELECTED_LEVEL == 100:
 		SELECTED_CHAPTER += 1
@@ -811,6 +838,7 @@ func _on_btn_next_level_pressed():
 
 
 func _on_btn_prev_level_2_pressed():
+	_play_sound("click")
 	if SELECTED_LEVEL > 0:
 		SELECTED_LEVEL -= 1
 		SELECTED_CHAPTER = int(SELECTED_LEVEL) / int(100)
@@ -821,6 +849,7 @@ func _on_btn_prev_level_2_pressed():
 
 
 func _on_btn_prev_chapter_pressed():
+	_play_sound("click")
 	if SELECTED_CHAPTER > 0:
 		SELECTED_CHAPTER -= 1
 		SELECTED_LEVEL = SELECTED_CHAPTER * 100
@@ -831,9 +860,36 @@ func _on_btn_prev_chapter_pressed():
 
 
 func _on_btn_next_chapter_pressed():
+	_play_sound("click")
 	SELECTED_CHAPTER += 1
 	SELECTED_LEVEL = SELECTED_CHAPTER * 100
 	input_chapter.text = str(SELECTED_CHAPTER)
 	input_level.text = str(SELECTED_LEVEL + 1)
 	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
+	pass # Replace with function body.
+
+
+func _play_sound(when):
+	match when:
+		"pick":
+			sfx_Card_pick.play()
+		"drop":
+			sfx_Card_drop.play()
+		"rotate":
+			sfx_Rotate.play()
+		"click":
+			sfx_Btn_click.play()
+		"error":
+			sfx_invalid.play()
+
+
+func _on_close_pressed():
+	_play_sound("click")
+	$"../Help_panel".visible = false
+	pass # Replace with function body.
+
+
+func _on_btn_help_pressed():
+	_play_sound("click")
+	$"../Help_panel".visible = true
 	pass # Replace with function body.

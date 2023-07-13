@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://c1gmh7vvp5smv"
+path="res://.godot/imported/Jazz Lounge.wav-85b172afef29d501994ef8fde555b532.sample"
+
+[deps]
+
+source_file="res://Sound/Jazz Lounge.wav"
+dest_files=["res://.godot/imported/Jazz Lounge.wav-85b172afef29d501994ef8fde555b532.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=2
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
