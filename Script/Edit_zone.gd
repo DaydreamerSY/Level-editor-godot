@@ -87,12 +87,8 @@ var sfx_invalid
 func _ready():
 	
 	print(OS.get_name())
-	if OS.get_name() == "macOS":
-		print("Resize window")
-		ProjectSettings.set_setting("display/window/size/window_height_override", 1100)
-		ProjectSettings.set_setting("display/window/size/window_width_override", 800)
-		ProjectSettings.set_setting("display/window/size/window_height", 1100)
-		ProjectSettings.set_setting("display/window/size/window_width", 300)
+	if OS.get_name() == "window":
+		print("Resize for Window")
 		DisplayServer.window_set_size(Vector2(1100,800))
 
 	

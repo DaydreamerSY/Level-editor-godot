@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Level-editor"
+config/name="Level-editor-godot-ver-super-vip-pro-limited"
 run/main_scene="res://main_scence.tscn"
 config/features=PackedStringArray("4.0", "Mobile")
 config/icon="res://icon.svg"
