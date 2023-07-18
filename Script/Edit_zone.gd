@@ -197,15 +197,16 @@ func _load_level(selected_level):
 	SIZE_H = level_n["w"]
 	BOARD = level_n["b"]
 	
-	print(BOARD)
+	
 	
 	LEVEL_N_WORDS = []
 	
 	for i in LIST_WORDS[selected_level].split(" - "):
 		LEVEL_N_WORDS.append(i.replace("\r","").to_upper())
-		
-	print(LEVEL_N_WORDS)
-		
+	
+#	print(BOARD)
+#	print(LEVEL_N_WORDS)
+	
 	for n in Wordlist_horizontal_box.get_children():
 		Wordlist_horizontal_box.remove_child(n)
 		n.queue_free()
