@@ -6,26 +6,22 @@ extends Control
 @export var btn_word: PackedScene
 
 
-#test screen size in window override
-#1100
-#800
-
-# default setting
-var SETTING = {
-	"showBackground": false, # if false, showBlockHolder false too (even it set to true)
-	"showBlockHolder": true,
-	"letterSize": {
-		"background": Vector2(60, 60),
-		"letter": 40 # background increse 10 then letter increase 5
-	}
-}
-
 var COLOR_CODE = {
 	"red": Color("#fa98a7"),
 	"green": Color("#79d97b"),
 	"yellow": Color.LIGHT_GOLDENROD
 }
 
+# default setting
+var SETTING = {
+	"showBackground": false, # Default: 35 false. if false, showBlockHolder false too (even it set to true)
+	"showBlockHolder": true,
+	"letterSize": {
+		"background": Vector2(60, 60), # Default: Vector2(50, 50)
+		"letter": 40 # Default: 35. Background increse 10 then letter increase 5 
+	},
+	"snapStep": 65 # Default: 55. snapStep = SETTING["letterSize"]["background"].x + 5
+}
 
 var START_POSITION = SETTING["letterSize"]["background"]
 
@@ -402,10 +398,10 @@ func _update_new_pos(dist):
 func _snaped_pos():
 		
 	for i in range(len(LIST_OF_BLOCK[selected_id])):
-		LIST_OF_BLOCK[selected_id][i].position = snapped(LIST_OF_BLOCK[selected_id][i].position, Vector2(55, 55))
+		LIST_OF_BLOCK[selected_id][i].position = snapped(LIST_OF_BLOCK[selected_id][i].position, Vector2(SETTING["snapStep"], SETTING["snapStep"]))
 
-		INDEX_STORE[selected_id][i]["r"] += LIST_OF_BLOCK[selected_id][i].position.y / 55 - INDEX_STORE[selected_id][i]["r"] -1
-		INDEX_STORE[selected_id][i]["c"] += LIST_OF_BLOCK[selected_id][i].position.x / 55 - INDEX_STORE[selected_id][i]["c"] -1
+		INDEX_STORE[selected_id][i]["r"] += LIST_OF_BLOCK[selected_id][i].position.y / SETTING["snapStep"] - INDEX_STORE[selected_id][i]["r"] -1
+		INDEX_STORE[selected_id][i]["c"] += LIST_OF_BLOCK[selected_id][i].position.x / SETTING["snapStep"] - INDEX_STORE[selected_id][i]["c"] -1
 #		print(INDEX_STORE[selected_id][i])
 #		print(LIST_OF_BLOCK[selected_id][i].position / Vector2(55, 55))
 #		print("r need to + " + str(LIST_OF_BLOCK[selected_id][i].position.y / 55 - INDEX_STORE[selected_id][i]["r"]))
@@ -442,8 +438,8 @@ func _rotate_horizontal():
 	
 	step = 0
 	for coor in LIST_OF_BLOCK[selected_id]:
-		coor.position.y -= step  * 55
-		coor.position.x += step * 55
+		coor.position.y -= step  * SETTING["snapStep"]
+		coor.position.x += step * SETTING["snapStep"]
 		step += 1
 
 
@@ -457,8 +453,8 @@ func _rotate_vertical():
 	
 	step = 0
 	for coor in LIST_OF_BLOCK[selected_id]:
-		coor.position.y += step * 55
-		coor.position.x -= step * 55
+		coor.position.y += step * SETTING["snapStep"]
+		coor.position.x -= step * SETTING["snapStep"]
 		step += 1
 
 
