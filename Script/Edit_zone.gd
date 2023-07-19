@@ -14,6 +14,10 @@ extends Control
 var SETTING = {
 	"showBackground": false, # if false, showBlockHolder false too (even it set to true)
 	"showBlockHolder": true,
+	"letterSize": {
+		"background": Vector2(60, 60),
+		"letter": 40 # background increse 10 then letter increase 5
+	}
 }
 
 var COLOR_CODE = {
@@ -23,7 +27,7 @@ var COLOR_CODE = {
 }
 
 
-var START_POSITION = Vector2(50, 50)
+var START_POSITION = SETTING["letterSize"]["background"]
 
 var LEVEL_EDIT_SIZE = 20
 var SIZE = {"row": LEVEL_EDIT_SIZE, "col": LEVEL_EDIT_SIZE}
@@ -87,9 +91,10 @@ var sfx_invalid
 func _ready():
 	
 	print(OS.get_name())
-	if OS.get_name() == "window":
-		print("Resize for Window")
+	if OS.get_name() == "Windows":
+		print("Resize for Windows")
 		DisplayServer.window_set_size(Vector2(1100,800))
+		DisplayServer.window_set_size(Vector2(100, 100))
 
 	
 	Background = $Background
@@ -349,7 +354,10 @@ func _print_level_edit():
 			mob.position = Vector2((START_POSITION.x + PADDING.top) * (pos["c"] + 1), 
 				(START_POSITION.y + PADDING.right) * (pos["r"] + 1))
 				
+			mob.set("size", SETTING["letterSize"]["background"])
+				
 			mob.get_node("Letter").text = LEVEL_N_WORDS[i][pos_count]
+			mob.get_node("Letter").set("theme_override_font_sizes/font_size", SETTING["letterSize"]["letter"])
 			mob.get_node("ID").text = str(i)
 			
 			mob.connect("you_are_hover_on", _on_moused_enter_item)
