@@ -205,8 +205,8 @@ func _load_level(selected_level):
 	for i in LIST_WORDS[selected_level].split(" - "):
 		LEVEL_N_WORDS.append(i.replace("\r","").to_upper())
 	
-#	print(BOARD)
-#	print(LEVEL_N_WORDS)
+	print(BOARD)
+	print(LEVEL_N_WORDS)
 	
 	for n in Wordlist_horizontal_box.get_children():
 		Wordlist_horizontal_box.remove_child(n)
@@ -459,6 +459,7 @@ func _rotate_vertical():
 
 
 func _save_to_file():
+	_play_sound("click")
 	var top_most_coor = LEVEL_EDIT_SIZE
 	var left_most_coor = LEVEL_EDIT_SIZE
 	var bottom_most_coor = 0
@@ -558,6 +559,7 @@ func _save_to_file():
 
 
 func _on_btn_load_pressed():
+	_play_sound("click")
 	SELECTED_LEVEL = float(input_level.text) - 1
 	SELECTED_CHAPTER = int(SELECTED_LEVEL) / int(100)
 	input_chapter.text = str(SELECTED_CHAPTER)
