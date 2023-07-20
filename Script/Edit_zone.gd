@@ -852,7 +852,7 @@ func _check_size():
 	right_most_coor += 1
 	bottom_most_coor += 1
 
-	if right_most_coor > 12 or bottom_most_coor > 12:
+	if right_most_coor > 20 or bottom_most_coor > 20:
 		return {
 			'valid': false,
 			'text': response_string % "%sx%s" % [right_most_coor, bottom_most_coor],
