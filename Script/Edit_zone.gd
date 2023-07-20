@@ -178,9 +178,39 @@ func _load_database(chapter):
 
 	LIST_LEVEL = DATA_BOARD["ListLevelsInChapter"]
 
-	content = FileAccess.get_file_as_string("user://level-list.txt")
-#	content = file.get_as_text()
-	LIST_WORDS = content.split("\n")
+#	content = FileAccess.get_file_as_string("user://level-list.txt")
+#	LIST_WORDS = content.split("\n")
+	_get_data_from_csv()
+	
+
+func _get_data_from_csv():
+	var csv = []
+	LIST_WORDS = []
+	var file = FileAccess.open("user://words1.0.26.csv", FileAccess.READ)
+	while !file.eof_reached():
+		var csv_rows = file.get_csv_line(",") # I use tab as delimiter
+		csv.append(csv_rows)
+	file.close()
+	csv.pop_back() #remove last empty array get_csv_line() has created 
+	var headers = Array(csv[0])
+	
+	# get data without header
+	var csv_noheaders = csv.duplicate(true)
+	csv_noheaders.remove_at(0) #remove first array (headers) from the csv
+
+	
+	# find column
+	var column_name_id = headers.find("normal words")
+	var level_id = 2
+#	print(column_name_id)
+#
+#	print(csv_noheaders[level_id][column_name_id])
+	
+	
+	for i in range(len(csv_noheaders)):
+#		print(csv_noheaders[i - 2][column_name_id])
+		LIST_WORDS.append(csv_noheaders[i][column_name_id])
+	pass
 
 
 func _save_database(chapter):
@@ -205,8 +235,8 @@ func _load_level(selected_level):
 	for i in LIST_WORDS[selected_level].split(" - "):
 		LEVEL_N_WORDS.append(i.replace("\r","").to_upper())
 	
-	print(BOARD)
-	print(LEVEL_N_WORDS)
+#	print(BOARD)
+#	print(LEVEL_N_WORDS)
 	
 	for n in Wordlist_horizontal_box.get_children():
 		Wordlist_horizontal_box.remove_child(n)
@@ -566,6 +596,11 @@ func _on_btn_load_pressed():
 	input_level.text = str(SELECTED_LEVEL + 1)
 	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
 
+func _check_current_chapter():
+	var readable_level = SELECTED_LEVEL + 1
+	if readable_level >= 33:
+		pass
+	pass
 
 func _check_valid():
 #	all checking func should return string, then concatenate all string to final and detail error
