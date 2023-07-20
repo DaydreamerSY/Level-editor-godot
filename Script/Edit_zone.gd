@@ -90,7 +90,7 @@ func _ready():
 	if OS.get_name() == "Windows":
 		print("Resize for Windows")
 		DisplayServer.window_set_size(Vector2(1100,800))
-		DisplayServer.window_set_size(Vector2(100, 100))
+		DisplayServer.window_set_position(Vector2(200, 200))
 
 	
 	Background = $Background
