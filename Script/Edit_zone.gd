@@ -20,7 +20,8 @@ var SETTING = {
 		"background": Vector2(60, 60), # Default: Vector2(50, 50)
 		"letter": 40 # Default: 35. Background increse 10 then letter increase 5 
 	},
-	"snapStep": 65 # Default: 55. snapStep = SETTING["letterSize"]["background"].x + 5
+	"snapStep": 65, # Default: 55. snapStep = SETTING["letterSize"]["background"].x + 5
+	"animationSpeed": 0.1
 }
 
 var START_POSITION = SETTING["letterSize"]["background"]
@@ -81,7 +82,7 @@ var sfx_Btn_click
 var sfx_Rotate
 var sfx_invalid
 
-
+var tween_parallel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -91,7 +92,6 @@ func _ready():
 		print("Resize for Windows")
 		DisplayServer.window_set_size(Vector2(1100,800))
 		DisplayServer.window_set_position(Vector2(200, 200))
-
 	
 	Background = $Background
 	Frontground = $Frontground
@@ -362,6 +362,7 @@ func _update_level_index():
 
 			if not is_set:
 				LEVEL_EDIT[r][c] = " "
+				
 
 
 func _print_level_edit():
@@ -426,20 +427,37 @@ func _update_new_pos(dist):
 
 
 func _snaped_pos():
+	
+	tween_parallel = get_tree().create_tween().set_parallel(true)
 		
 	for i in range(len(LIST_OF_BLOCK[selected_id])):
-		LIST_OF_BLOCK[selected_id][i].position = snapped(LIST_OF_BLOCK[selected_id][i].position, Vector2(SETTING["snapStep"], SETTING["snapStep"]))
+#		LIST_OF_BLOCK[selected_id][i].position = snapped(
+#			LIST_OF_BLOCK[selected_id][i].position, 
+#			Vector2(SETTING["snapStep"], SETTING["snapStep"])
+#		)
+		
+		var new_pos = snapped(
+				LIST_OF_BLOCK[selected_id][i].position, 
+				Vector2(SETTING["snapStep"], SETTING["snapStep"])
+			).round()
+		
+		tween_parallel.tween_property(
+			LIST_OF_BLOCK[selected_id][i],
+			"position",
+			new_pos,
+			SETTING["animationSpeed"]
+		)
 
-		INDEX_STORE[selected_id][i]["r"] += LIST_OF_BLOCK[selected_id][i].position.y / SETTING["snapStep"] - INDEX_STORE[selected_id][i]["r"] -1
-		INDEX_STORE[selected_id][i]["c"] += LIST_OF_BLOCK[selected_id][i].position.x / SETTING["snapStep"] - INDEX_STORE[selected_id][i]["c"] -1
+		INDEX_STORE[selected_id][i]["r"] += new_pos.y / SETTING["snapStep"] - INDEX_STORE[selected_id][i]["r"] -1
+		INDEX_STORE[selected_id][i]["c"] += new_pos.x / SETTING["snapStep"] - INDEX_STORE[selected_id][i]["c"] -1
 #		print(INDEX_STORE[selected_id][i])
 #		print(LIST_OF_BLOCK[selected_id][i].position / Vector2(55, 55))
 #		print("r need to + " + str(LIST_OF_BLOCK[selected_id][i].position.y / 55 - INDEX_STORE[selected_id][i]["r"]))
 #		print("c need to + " + str(LIST_OF_BLOCK[selected_id][i].position.x / 55 - INDEX_STORE[selected_id][i]["c"]))
 #	print()
 
-	_update_level_index()
-	_check_valid()
+	tween_parallel.chain().tween_callback(_check_valid)
+#	_check_valid()
 
 
 func _rotate():
@@ -461,20 +479,37 @@ func _rotate():
 
 func _rotate_horizontal():
 	var step = 0
+	tween_parallel = get_tree().create_tween().set_parallel(true)
+	
 	for coor in INDEX_STORE[selected_id]:
 		coor["r"] -= step
 		coor["c"] += step
 		step += 1
+
 	
 	step = 0
 	for coor in LIST_OF_BLOCK[selected_id]:
-		coor.position.y -= step  * SETTING["snapStep"]
-		coor.position.x += step * SETTING["snapStep"]
+#		coor.position.y -= step  * SETTING["snapStep"]
+#		coor.position.x += step * SETTING["snapStep"]
+		
+		tween_parallel.tween_property(
+			coor,
+			"position:y", 
+			coor.position.y - step  * SETTING["snapStep"], 
+			SETTING["animationSpeed"]
+		)
+		tween_parallel.tween_property(coor, 
+			"position:x", 
+			coor.position.x + step * SETTING["snapStep"], 
+			SETTING["animationSpeed"]
+		)
+		
 		step += 1
 
 
 func _rotate_vertical():
 	var step = 0
+	tween_parallel = get_tree().create_tween().set_parallel(true)
 
 	for coor in INDEX_STORE[selected_id]:
 		coor["r"] += step
@@ -483,8 +518,21 @@ func _rotate_vertical():
 	
 	step = 0
 	for coor in LIST_OF_BLOCK[selected_id]:
-		coor.position.y += step * SETTING["snapStep"]
-		coor.position.x -= step * SETTING["snapStep"]
+#		coor.position.y += step * SETTING["snapStep"]
+#		coor.position.x -= step * SETTING["snapStep"]
+		
+		tween_parallel.tween_property(
+			coor,
+			"position:y", 
+			coor.position.y + step * SETTING["snapStep"], 
+			SETTING["animationSpeed"]
+		)
+		tween_parallel.tween_property(coor, 
+			"position:x", 
+			coor.position.x - step * SETTING["snapStep"], 
+			SETTING["animationSpeed"]
+		)
+		
 		step += 1
 
 
@@ -596,11 +644,13 @@ func _on_btn_load_pressed():
 	input_level.text = str(SELECTED_LEVEL + 1)
 	_give_me_that_shit(SELECTED_CHAPTER, SELECTED_LEVEL)
 
+
 func _check_current_chapter():
 	var readable_level = SELECTED_LEVEL + 1
 	if readable_level >= 33:
 		pass
 	pass
+
 
 func _check_valid():
 #	all checking func should return string, then concatenate all string to final and detail error
