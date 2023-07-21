@@ -2,7 +2,7 @@ extends Control
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-#	_load_csv()
+	_load_csv()
 	pass # Replace with function body.
 
 
