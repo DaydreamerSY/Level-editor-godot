@@ -19,10 +19,10 @@ var SETTING = {
 		"letter": 40 # Default: 35. Background increse 10 then letter increase 5 
 	},
 	"snapStep": 65, # Default: 55. snapStep = SETTING["letterSize"]["background"].x + 5
-	"animationSpeed": 0.3,
+	"animationSpeed": 0.5,
 	"playtestSize": {
-		"background": Vector2(100, 100), # Default: Vector2(50, 50)
-		"letter": 65 # Default: 35. Background increse 10 then letter increase 5 
+		"background": Vector2(110, 110), # Default: Vector2(50, 50)
+		"letter": 80 # Default: 35. Background increse 10 then letter increase 5 
 	}
 }
 
@@ -102,20 +102,21 @@ var label_connected_word
 var background_connected_word
 var background_1_letter_size = Vector2(120, 110) # 2 letter.x: 210, 4 letter.x: 280 -> 9 letter.x:245
 var background_increase_step = 35
-
+var hooray_moment_bg
+var invalid_notif
+var invalid_notif_text
 
 var line
 var was_add_point = false
 var point_count = 0
 
+var time_display
+var time_start = 0
+var time_now = 0
+var is_time_started = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	
-#	print(OS.get_name())
-#	if OS.get_name() == "Windows":
-#		print("Resize for Windows")
-#		DisplayServer.window_set_size(Vector2(1100,800))
-#		DisplayServer.window_set_position(Vector2(200, 200))
 	
 	Background = $Background
 	Frontground = $Frontground
@@ -136,6 +137,10 @@ func _ready():
 	
 	background_connected_word = $"../Controll_zone/Connected_text"
 	label_connected_word = $"../Controll_zone/Connected_text/Label"
+	hooray_moment_bg = $"../Controll_zone/Hooray_moment"
+	time_display = $"../Controll_zone/time_label"
+	invalid_notif = $"../Controll_zone/Invalid_notif"
+	invalid_notif_text = $"../Controll_zone/Invalid_notif/Label_color"
 	
 	line = $"../Controll_zone/Line"
 	
@@ -150,7 +155,8 @@ func _ready():
 func _process(delta):
 	if mouse_left_down:
 #		line.remove_point(-1)
-		line.set_point_position(point_count-1, get_viewport().get_mouse_position())
+		if len(connected_letters) > 0:
+			line.set_point_position(point_count-1, get_viewport().get_mouse_position())
 #		print(current_letter_selected_id)
 		if not current_letter_selected_id == null:
 			_add_or_remove_from_stack(current_letter_selected_id)
@@ -159,6 +165,16 @@ func _process(delta):
 	if not mouse_left_down: # Left click release
 #		print("you are free ")
 		pass
+		
+	if is_time_started:
+		time_now = Time.get_unix_time_from_system()
+		var elapsed = time_now - time_start
+		var minutes = elapsed / 60
+		var seconds = int(fmod(elapsed , 60))
+	#	int(fmod(selected_level , 100))
+		var str_elapsed = "%02d : %02d" % [minutes, seconds]
+#		print("elapsed : ", str_elapsed)
+		time_display.text = str_elapsed
 
 
 func _input( event ):
@@ -171,11 +187,23 @@ func _input( event ):
 #			_play_sound("pick")
 		elif event.button_index == 1 and not event.is_pressed():
 			mouse_left_down = false
-			_show_answer(connected_letters)
+			var answer_connected = "".join(connected_letters)
+			
+
+			
+			if answer_connected in LEVEL_N_WORDS:
+				var word_index = LEVEL_N_WORDS.find(answer_connected)
+				if list_of_unlock_answer[word_index]:
+					_show_already_found(answer_connected)
+				else:
+					_show_answer(word_index)
+			else:
+				_show_incorrect()
+			
 			if is_dragging:
 				is_dragging = false
-				print(connected_id)
-				print(connected_letters)
+#				print(connected_id)
+#				print(connected_letters)
 				connected_id = []
 				connected_letters = []
 				connected_id_letters = {}
@@ -188,43 +216,191 @@ func _input( event ):
 					
 				label_connected_word.text = ""
 				background_connected_word.visible = false
-#			_play_sound("drop")
+				line.clear_points()
 
 
-func _show_answer(connected_letters):
-	var answer_connected = "".join(connected_letters)
+func _show_already_found(answer):
+	invalid_notif_text.text = "[center][color=red]%s[/color] already found[/center]" % answer
 	
 	tween_parallel = get_tree().create_tween().set_parallel(true)
-	line.clear_points()
 	
-	for i in range(len(LEVEL_N_WORDS)):
-		if answer_connected == LEVEL_N_WORDS[i]:
-			if list_of_unlock_answer[i] == true:
-				break
-			print("True")
-			for mob in Frontground.get_children():
-				if mob.get_node("ID").text == str(i):
-					mob.visible = true
-					mob.set("scale", Vector2(0, 0))
-					mob.set("position", mob.position + Vector2(SETTING["letterSize"]["background"] / 2))
-					
-					tween_parallel.tween_property(
-						mob,
-						"position", 
-						mob.position - Vector2(SETTING["letterSize"]["background"] / 2), 
-						SETTING["animationSpeed"]
-					).set_trans(Tween.TRANS_CUBIC)
+	invalid_notif.set("scale", Vector2(0,0))
+	invalid_notif.set("position", invalid_notif.position + invalid_notif.size / 2)
+	invalid_notif.set("visible", true)
+	invalid_notif.set("modulate", Color.html("ffffff00"))
+	
+	tween_parallel.tween_property(
+		invalid_notif,
+		"scale",
+		Vector2(1, 1),
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.tween_property(
+		invalid_notif,
+		"position",
+		invalid_notif.position - invalid_notif.size / 2,
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.tween_property(
+		invalid_notif,
+		"modulate",
+		Color.html("ffffff"),
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.tween_interval(1)
+	
+	tween_parallel.chain().tween_property(
+		invalid_notif,
+		"modulate",
+		Color.html("ffffff00"),
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.chain().tween_property(
+		invalid_notif,
+		"scale",
+		Vector2(0, 0),
+		SETTING["animationSpeed"]
+	)
 
-					tween_parallel.tween_property(
-						mob,
-						"scale", 
-						Vector2(1, 1), 
-						SETTING["animationSpeed"]
-					).set_trans(Tween.TRANS_CUBIC)
-					
-			list_of_unlock_answer[i] = true
-			break	
+
+func _show_incorrect():
+	var current_pos
+	for i in connected_id:
+#		list_of_swipe_block[i] 
+		tween_parallel = get_tree().create_tween().set_parallel(true)
+		current_pos = list_of_swipe_block[i].position
+		tween_parallel.tween_property(
+			list_of_swipe_block[i],
+			"position",
+			current_pos + Vector2(10, 0),
+			0.1
+		)
+		
+		tween_parallel.chain().tween_property(
+			list_of_swipe_block[i],
+			"position",
+			current_pos - Vector2(10, 0),
+			0.1
+		)
+		
+		tween_parallel.chain().tween_property(
+			list_of_swipe_block[i],
+			"position",
+			current_pos,
+			0.1
+		)
+	pass
+
+
+func _show_answer(i):
+	_show_hooray()
 	
+	for mob in Frontground.get_children():
+		if mob.get_node("ID").text == str(i):
+			mob.visible = true
+			mob._set_active(true)
+			_random_effect(mob)
+
+			
+	list_of_unlock_answer[i] = true
+	if false not in list_of_unlock_answer:
+		is_time_started = false
+	
+	pass
+
+
+func _show_hooray():
+	tween_parallel = get_tree().create_tween().set_parallel(true)
+	
+	hooray_moment_bg.set("scale", Vector2(0,0))
+	hooray_moment_bg.set("position", hooray_moment_bg.position + hooray_moment_bg.size / 2)
+	hooray_moment_bg.set("visible", true)
+	hooray_moment_bg.set("modulate", Color.html("ffffff00"))
+	
+	tween_parallel.tween_property(
+		hooray_moment_bg,
+		"scale",
+		Vector2(1, 1),
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.tween_property(
+		hooray_moment_bg,
+		"position",
+		hooray_moment_bg.position - hooray_moment_bg.size / 2,
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.tween_property(
+		hooray_moment_bg,
+		"modulate",
+		Color.html("ffffff"),
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.tween_interval(1)
+	
+	tween_parallel.chain().tween_property(
+		hooray_moment_bg,
+		"modulate",
+		Color.html("ffffff00"),
+		SETTING["animationSpeed"]
+	)
+	
+	tween_parallel.chain().tween_property(
+		hooray_moment_bg,
+		"scale",
+		Vector2(0, 0),
+		SETTING["animationSpeed"]
+	)
+
+
+func _random_effect(mob):
+	# random 1 - 4
+	var case = randi() % 4 + 1
+	
+	tween_parallel = get_tree().create_tween().set_parallel(true)
+	match case:
+		1:
+			var begin_pos = Vector2(0, 500)
+			mob.set("position", mob.position - begin_pos)
+			tween_parallel.tween_property(
+				mob,
+				"position", 
+				mob.position + begin_pos, 
+				SETTING["animationSpeed"]
+			).set_trans(Tween.TRANS_EXPO)
+		2:
+			var begin_pos = Vector2(500, 0)
+			mob.set("position", mob.position - begin_pos)
+			tween_parallel.tween_property(
+				mob,
+				"position", 
+				mob.position + begin_pos, 
+				SETTING["animationSpeed"]
+			).set_trans(Tween.TRANS_EXPO)
+		3:
+			var begin_pos = Vector2(0, 500)
+			mob.set("position", mob.position + begin_pos)
+			tween_parallel.tween_property(
+				mob,
+				"position", 
+				mob.position - begin_pos, 
+				SETTING["animationSpeed"]
+			).set_trans(Tween.TRANS_EXPO)
+		4:
+			var begin_pos = Vector2(500, 0)
+			mob.set("position", mob.position + begin_pos)
+			tween_parallel.tween_property(
+				mob,
+				"position", 
+				mob.position - begin_pos, 
+				SETTING["animationSpeed"]
+			).set_trans(Tween.TRANS_EXPO)
 	pass
 
 
@@ -356,9 +532,6 @@ func _prepare_index_store():
 
 func _scale_up():
 
-	# insert board into bigger board 25x25
-
-				
 	LEVEL_EDIT = []
 	for x in range(LEVEL_EDIT_SIZE):
 		LEVEL_EDIT.append([])
@@ -442,7 +615,9 @@ func _print_level_edit():
 #		print(LIST_OF_BLOCK[i])
 
 	_test_spawn_swipe_block()
-
+	time_start = Time.get_unix_time_from_system()
+	is_time_started = true
+#    set_process(true)
 	pass
 
 
@@ -663,15 +838,15 @@ func _test_spawn_swipe_block():
 		zone.remove_child(n)
 		n.queue_free()
 	
-	var radius = 200
+	var radius = 225
 	set_letter = LEVEL_N_WORDS[-1].split()
 	var num_objects = len(set_letter)
 	max_stack = num_objects
 
 	var angle_increment = 360.0 / num_objects
 	
-	print(num_objects)
-	print(set_letter)
+#	print(num_objects)
+#	print(set_letter)
 	
 	for i in range(num_objects):
 		# Calculate the angle for this object
@@ -699,7 +874,7 @@ func _test_spawn_swipe_block():
 		mob.connect("you_are_hover_on", _on_add_letter_to_stack)
 		mob.connect("you_are_exit", _on_move_to_next_letter)
 		
-		print("connected func")
+#		print("connected func")
 		zone.add_child(mob)
 		list_of_swipe_block.append(mob)
 
@@ -726,7 +901,7 @@ func _update_something_when_add_or_remove_from_stack(id):
 	list_of_swipe_block[id]._set_active(true)
 	was_added_or_removed = true
 	was_add_point = true
-	print("Add %s to stack %s" % [set_letter[id], connected_id])
+#	print("Add %s to stack %s" % [set_letter[id], connected_id])
 	pass
 
 
@@ -761,7 +936,7 @@ func _add_or_remove_from_stack(id):
 			return
 		if connected_id[-2] == id:
 			
-			print("will Remove %s out of stack %s" % [connected_letters[-1], connected_id])
+#			print("will Remove %s out of stack %s" % [connected_letters[-1], connected_id])
 			list_of_swipe_block[connected_id[-1]]._set_active(false)
 			
 			connected_id.remove_at(len(connected_id)-1)
@@ -769,7 +944,7 @@ func _add_or_remove_from_stack(id):
 			line.remove_point(point_count - 1)
 			point_count -= 1
 			
-			print(connected_letters.size())
+#			print(connected_letters.size())
 			was_added_or_removed = true
 			label_connected_word.text = "".join(connected_letters)
 			
