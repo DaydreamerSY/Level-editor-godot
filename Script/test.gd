@@ -41,3 +41,16 @@ func _load_csv():
 #			print(i)
 #		print(csv_noheaders[i - 2][column_name_id])
 
+
+
+
+
+
+func _on_playtest_mode_pressed():
+	$".".visible = false
+	$"../Play_test".visible = true
+
+
+func _on_edit_mode_pressed():
+	$".".visible = true
+	$"../Play_test".visible = false
