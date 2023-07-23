@@ -2,8 +2,6 @@ extends Control
 
 @export var block_holder: PackedScene
 @export var block_letter: PackedScene
-@export var responser: PackedScene
-@export var btn_word: PackedScene
 
 
 var COLOR_CODE = {
@@ -21,7 +19,7 @@ var SETTING = {
 		"letter": 40 # Default: 35. Background increse 10 then letter increase 5 
 	},
 	"snapStep": 65, # Default: 55. snapStep = SETTING["letterSize"]["background"].x + 5
-	"animationSpeed": 0.1,
+	"animationSpeed": 0.3,
 	"playtestSize": {
 		"background": Vector2(100, 100), # Default: Vector2(50, 50)
 		"letter": 65 # Default: 35. Background increse 10 then letter increase 5 
@@ -91,20 +89,33 @@ var tween_parallel
 var connected_id = []
 var connected_letters = []
 var connected_id_letters = {}
-var current_letter_conncet = null
+var current_letter_selected_id = null
 var set_letter
 var list_of_swipe_block = []
 var max_stack = 0
 var was_added_or_removed = false
+var list_of_unlock_answer = []
+var zone
+var center
+
+var label_connected_word
+var background_connected_word
+var background_1_letter_size = Vector2(120, 110) # 2 letter.x: 210, 4 letter.x: 280 -> 9 letter.x:245
+var background_increase_step = 35
+
+
+var line
+var was_add_point = false
+var point_count = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
-	print(OS.get_name())
-	if OS.get_name() == "Windows":
-		print("Resize for Windows")
-		DisplayServer.window_set_size(Vector2(1100,800))
-		DisplayServer.window_set_position(Vector2(200, 200))
+#	print(OS.get_name())
+#	if OS.get_name() == "Windows":
+#		print("Resize for Windows")
+#		DisplayServer.window_set_size(Vector2(1100,800))
+#		DisplayServer.window_set_position(Vector2(200, 200))
 	
 	Background = $Background
 	Frontground = $Frontground
@@ -120,56 +131,101 @@ func _ready():
 	sfx_Rotate = $"../../Sound/SFX/Card_shuffle"
 	sfx_invalid = $"../../Sound/SFX/Word_invalid"
 	
+	zone = $"../Controll_zone/Swipe_zone_center"
+	center = $"../Controll_zone/Swipe_zone_center/Center"
+	
+	background_connected_word = $"../Controll_zone/Connected_text"
+	label_connected_word = $"../Controll_zone/Connected_text/Label"
+	
+	line = $"../Controll_zone/Line"
+	
 	Background.visible = SETTING["showBackground"]
 	
-#	if SETTING["showBlockHolder"]:
-#		for r in range(0, SIZE.row):
-#			var row = []
-#			for c in range(0, SIZE.col):
-#				var mob = block_holder.instantiate()
-#				mob.position = Vector2((START_POSITION.x + PADDING.top) * (c + 1), 
-#					(START_POSITION.y + PADDING.right) * (r + 1))
-#				Background.add_child(mob)
-#				row.append(mob)
-#	#			print("Install block " + str(mob.position.x) + ", " + str(mob.position.y))
-#			BOARD_BG.append(row)
+	print(SETTING["letterSize"]["background"])
+	print(SETTING["letterSize"]["background"] / 2)
 
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if mouse_left_down:
-		is_dragging = true
-#		print(current_letter_conncet)
-		if not current_letter_conncet == null:
-			_add_or_remove_from_stack(current_letter_conncet)
+#		line.remove_point(-1)
+		line.set_point_position(point_count-1, get_viewport().get_mouse_position())
+#		print(current_letter_selected_id)
+		if not current_letter_selected_id == null:
+			_add_or_remove_from_stack(current_letter_selected_id)
 	
 	
 	if not mouse_left_down: # Left click release
 #		print("you are free ")
-		if is_dragging:
-			is_dragging = false
-			print(connected_id)
-			print(connected_letters)
-			connected_id = []
-			connected_letters = []
-			connected_id_letters = {}
-			current_letter_conncet = null
-			
-			
-			for i in list_of_swipe_block:
-				i._set_active(false)
+		pass
 
 
 func _input( event ):
 	if event is InputEventMouseButton:
 		if event.button_index == 1 and event.is_pressed():
 			mouse_left_down = true
+			is_dragging = true
+#			line.add_point(get_viewport().get_mouse_position())
+			
 #			_play_sound("pick")
 		elif event.button_index == 1 and not event.is_pressed():
 			mouse_left_down = false
+			_show_answer(connected_letters)
+			if is_dragging:
+				is_dragging = false
+				print(connected_id)
+				print(connected_letters)
+				connected_id = []
+				connected_letters = []
+				connected_id_letters = {}
+				
+				was_added_or_removed = false
+				point_count = 0
+				
+				for i in list_of_swipe_block:
+					i._set_active(false)
+					
+				label_connected_word.text = ""
+				background_connected_word.visible = false
 #			_play_sound("drop")
-			
+
+
+func _show_answer(connected_letters):
+	var answer_connected = "".join(connected_letters)
+	
+	tween_parallel = get_tree().create_tween().set_parallel(true)
+	line.clear_points()
+	
+	for i in range(len(LEVEL_N_WORDS)):
+		if answer_connected == LEVEL_N_WORDS[i]:
+			if list_of_unlock_answer[i] == true:
+				break
+			print("True")
+			for mob in Frontground.get_children():
+				if mob.get_node("ID").text == str(i):
+					mob.visible = true
+					mob.set("scale", Vector2(0, 0))
+					mob.set("position", mob.position + Vector2(SETTING["letterSize"]["background"] / 2))
+					
+					tween_parallel.tween_property(
+						mob,
+						"position", 
+						mob.position - Vector2(SETTING["letterSize"]["background"] / 2), 
+						SETTING["animationSpeed"]
+					).set_trans(Tween.TRANS_CUBIC)
+
+					tween_parallel.tween_property(
+						mob,
+						"scale", 
+						Vector2(1, 1), 
+						SETTING["animationSpeed"]
+					).set_trans(Tween.TRANS_CUBIC)
+					
+			list_of_unlock_answer[i] = true
+			break	
+	
+	pass
 
 
 func _load_database(chapter):
@@ -237,9 +293,11 @@ func _load_level(selected_level):
 	
 	
 	LEVEL_N_WORDS = []
+	list_of_unlock_answer = []
 	
 	for i in LIST_WORDS[selected_level].split(" - "):
 		LEVEL_N_WORDS.append(i.replace("\r","").to_upper())
+		list_of_unlock_answer.append(false)
 
 
 func _set_active_items(id, is_active, type=1):
@@ -375,6 +433,7 @@ func _print_level_edit():
 			var bg_mob = block_holder.instantiate()
 			bg_mob.position = Vector2((START_POSITION.x + PADDING.top) * (pos["c"] + 1), 
 				(START_POSITION.y + PADDING.right) * (pos["r"] + 1))
+			bg_mob.set("size", SETTING["letterSize"]["background"])
 			Background.add_child(bg_mob)
 			
 			pos_count += 1
@@ -596,9 +655,6 @@ func _on_btn_help_pressed():
 
 func _test_spawn_swipe_block():
 	
-	var zone = $"../Controll_zone/Swipe_zone_center"
-	var center = $"../Controll_zone/Swipe_zone_center/Center"
-	
 	list_of_swipe_block.clear()
 	
 	for n in zone.get_children():
@@ -650,58 +706,55 @@ func _test_spawn_swipe_block():
 
 	pass
 
+
 func _on_add_letter_to_stack(id):
 #	print("Entered: " + set_letter[id])
-	current_letter_conncet = id
+	current_letter_selected_id = id
 	
 
 func _on_move_to_next_letter(id):
 #	print("Exited: " + set_letter[id])
 #	print(connected_id)
-	current_letter_conncet = null
+	current_letter_selected_id = null
 	was_added_or_removed = false
 	pass
 
+
+func _update_something_when_add_or_remove_from_stack(id):
+	connected_id.append(id)
+	connected_letters.append(set_letter[id])
+	list_of_swipe_block[id]._set_active(true)
+	was_added_or_removed = true
+	was_add_point = true
+	print("Add %s to stack %s" % [set_letter[id], connected_id])
+	pass
+
+
 func _add_or_remove_from_stack(id):
 	
-#	print("Im triggered...")
+	var point = list_of_swipe_block[id].global_position + (list_of_swipe_block[id].size / 2)
 	
 	if len(connected_id) == 0 and not was_added_or_removed:
-		connected_id.append(id)
-		connected_letters.append(set_letter[id])
-		list_of_swipe_block[id]._set_active(true)
-		was_added_or_removed = true
-		print("Add %s to stack %s" % [set_letter[id], connected_id])
+		_update_something_when_add_or_remove_from_stack(id)
+		line.add_point(point)
+		line.add_point(point)
+		point_count += 2
+		
+		background_connected_word.visible = true
+		label_connected_word.text = "".join(connected_letters)
 		return
 		
 	if len(connected_id) == 1 and not was_added_or_removed:
 		if connected_id[0] == id:
 			return
-		connected_id.append(id)
-		connected_letters.append(set_letter[id])
-		print("Add %s to stack %s" % [set_letter[id], connected_id])
-		list_of_swipe_block[id]._set_active(true)
-		was_added_or_removed = true
+			
+		_update_something_when_add_or_remove_from_stack(id)
+		line.set_point_position(point_count-1, point)
+		line.add_point(point)
+		point_count += 1
+		label_connected_word.text = "".join(connected_letters)
 		return
-	
-#	if len(connected_id) == 2 and not was_added_or_removed:
-#		if connected_id[1] == id:
-#			return
-#		if connected_id[0] == id:
-#			print("Remove %s out of stack %s" % [set_letter[connected_id[-1]], connected_id])
-#			connected_id.remove_at(1)
-#			connected_letters.remove_at(1)
-#			list_of_swipe_block[connected_id[-1]]._set_active(false)
-#			was_added_or_removed = true
-#		else:
-#			if len(connected_id) == max_stack:
-#				return
-#			connected_id.append(id)
-#			connected_letters.append(set_letter[id])
-#			print("Add %s to stack %s" % [set_letter[id], connected_id])
-#			list_of_swipe_block[id]._set_active(true)
-#			was_added_or_removed = true
-#		return
+
 	
 	if not was_added_or_removed:
 		if connected_id[-1] == id:
@@ -713,18 +766,22 @@ func _add_or_remove_from_stack(id):
 			
 			connected_id.remove_at(len(connected_id)-1)
 			connected_letters.remove_at(len(connected_letters)-1)
+			line.remove_point(point_count - 1)
+			point_count -= 1
 			
 			print(connected_letters.size())
 			was_added_or_removed = true
+			label_connected_word.text = "".join(connected_letters)
+			
 			
 		else:
 			if len(connected_id) == max_stack:
 				return
-			connected_id.append(id)
-			connected_letters.append(set_letter[id])
-			print("Add %s to stack %s" % [set_letter[id], connected_id])
-			list_of_swipe_block[id]._set_active(true)
-			was_added_or_removed = true
+			_update_something_when_add_or_remove_from_stack(id)
+			line.set_point_position(point_count-1, point)
+			line.add_point(point)
+			point_count += 1
+			label_connected_word.text = "".join(connected_letters)
 	
 	return
 #	print(connected_id)
