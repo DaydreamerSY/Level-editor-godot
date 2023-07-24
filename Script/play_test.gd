@@ -265,6 +265,8 @@ func _show_already_found(answer):
 		Vector2(0, 0),
 		SETTING["animationSpeed"]
 	)
+	
+	_show_incorrect()
 
 
 func _show_incorrect():
