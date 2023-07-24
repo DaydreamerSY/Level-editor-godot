@@ -909,6 +909,9 @@ func _update_something_when_add_or_remove_from_stack(id):
 
 func _add_or_remove_from_stack(id):
 	
+	if id in connected_id:
+		return
+	
 	var point = list_of_swipe_block[id].global_position + (list_of_swipe_block[id].size / 2)
 	
 	if len(connected_id) == 0 and not was_added_or_removed:
