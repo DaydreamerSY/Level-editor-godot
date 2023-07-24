@@ -62,6 +62,7 @@ var mouse_left_down = false
 var current_mouspos_before_hold_down
 var is_dragging = false
 var distance = 0
+var is_rotate_completed = false
 
 var RPAD_MIN_LENGTH = 10
 
@@ -479,57 +480,54 @@ func _rotate():
 
 func _rotate_horizontal():
 	var step = 0
+	var current_id = selected_id
 	tween_parallel = get_tree().create_tween().set_parallel(true)
 	
-	for coor in INDEX_STORE[selected_id]:
+	for coor in INDEX_STORE[current_id]:
 		coor["r"] -= step
 		coor["c"] += step
 		step += 1
 
 	
 	step = 0
-	for coor in LIST_OF_BLOCK[selected_id]:
+	for coor in LIST_OF_BLOCK[current_id]:
 #		coor.position.y -= step  * SETTING["snapStep"]
 #		coor.position.x += step * SETTING["snapStep"]
+
+		var new_pos = Vector2(coor.position.x + step * SETTING["snapStep"], coor.position.y - step  * SETTING["snapStep"])
 		
 		tween_parallel.tween_property(
 			coor,
-			"position:y", 
-			coor.position.y - step  * SETTING["snapStep"], 
-			SETTING["animationSpeed"]
-		)
-		tween_parallel.tween_property(coor, 
-			"position:x", 
-			coor.position.x + step * SETTING["snapStep"], 
+			"position", 
+			new_pos, 
 			SETTING["animationSpeed"]
 		)
 		
 		step += 1
+		
 
 
 func _rotate_vertical():
 	var step = 0
+	var current_id = selected_id
 	tween_parallel = get_tree().create_tween().set_parallel(true)
 
-	for coor in INDEX_STORE[selected_id]:
+	for coor in INDEX_STORE[current_id]:
 		coor["r"] += step
 		coor["c"] -= step
 		step += 1
 	
 	step = 0
-	for coor in LIST_OF_BLOCK[selected_id]:
+	for coor in LIST_OF_BLOCK[current_id]:
 #		coor.position.y += step * SETTING["snapStep"]
 #		coor.position.x -= step * SETTING["snapStep"]
 		
+		var new_pos = Vector2(coor.position.x - step * SETTING["snapStep"], coor.position.y + step  * SETTING["snapStep"])
+		
 		tween_parallel.tween_property(
 			coor,
-			"position:y", 
-			coor.position.y + step * SETTING["snapStep"], 
-			SETTING["animationSpeed"]
-		)
-		tween_parallel.tween_property(coor, 
-			"position:x", 
-			coor.position.x - step * SETTING["snapStep"], 
+			"position", 
+			new_pos, 
 			SETTING["animationSpeed"]
 		)
 		
