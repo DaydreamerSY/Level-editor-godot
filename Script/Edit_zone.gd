@@ -334,8 +334,6 @@ func _scale_up():
 				
 	var start_point_row = int((SIZE.row - SIZE_H) / 2)
 	var start_point_col = int((SIZE.col - SIZE_W) / 2)
-	
-#	LIST_OF_BLOCK[selected_id][i].position = snapped(LIST_OF_BLOCK[selected_id][i].position, Vector2(55, 55))
 
 	# import index_store to LEVEL_EDIT: scale coordinates to larger coordinates in LEVEL_EDIT
 	for index in INDEX_STORE:
@@ -370,6 +368,8 @@ func _print_level_edit():
 	for n in Frontground.get_children():
 		Frontground.remove_child(n)
 		n.queue_free()
+		
+	LIST_OF_BLOCK.clear()
 		
 #	print(INDEX_STORE)
 #	print(LEVEL_N_WORDS)

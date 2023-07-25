@@ -1,0 +1,49 @@
+[gd_scene load_steps=7 format=3 uid="uid://dnpjsi86n64x3"]
+
+[ext_resource type="Texture2D" uid="uid://x5re5hglcl0n" path="res://GAME ASSETS/Particle/particle_texture_sparkle.png" id="1_ujfan"]
+[ext_resource type="Material" uid="uid://0ne8oxgqxvvx" path="res://Scence/Particles/new_particle_process_material.tres" id="2_g47ur"]
+[ext_resource type="Texture2D" uid="uid://bc13mv7f53kce" path="res://GAME ASSETS/Particle/particle_texture_dot.png" id="3_wgnun"]
+
+[sub_resource type="Gradient" id="Gradient_kxyp7"]
+offsets = PackedFloat32Array(0, 0.840336, 1)
+colors = PackedColorArray(0.941176, 0.972549, 0.635294, 1, 0.98171, 0.991465, 0.886604, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0gjdu"]
+gradient = SubResource("Gradient_kxyp7")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y0iao"]
+emission_shape = 1
+emission_sphere_radius = 50.0
+particle_flag_disable_z = true
+gravity = Vector3(2.08165e-12, 2.08165e-12, 2.08165e-12)
+orbit_velocity_min = 0.0
+orbit_velocity_max = 0.0
+scale_min = 0.1
+scale_max = 0.1
+color_ramp = SubResource("GradientTexture1D_0gjdu")
+
+[node name="particle_booster" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -960.0
+offset_top = -800.0
+offset_right = -960.0
+offset_bottom = -800.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+process_material = SubResource("ParticleProcessMaterial_y0iao")
+texture = ExtResource("1_ujfan")
+speed_scale = 3.0
+fixed_fps = 60
+
+[node name="particle_starlight" type="GPUParticles2D" parent="."]
+process_material = ExtResource("2_g47ur")
+texture = ExtResource("3_wgnun")
+speed_scale = 4.95
+fixed_fps = 60

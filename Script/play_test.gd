@@ -2,6 +2,7 @@ extends Control
 
 @export var block_holder: PackedScene
 @export var block_letter: PackedScene
+@export var particle_booster: PackedScene
 
 
 var COLOR_CODE = {
@@ -114,6 +115,9 @@ var time_display
 var time_start = 0
 var time_now = 0
 var is_time_started = false
+
+var swipe_block_pos = []
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -478,10 +482,6 @@ func _load_level(selected_level):
 		list_of_unlock_answer.append(false)
 
 
-func _set_active_items(id, is_active, type=1):
-	for letter in LIST_OF_BLOCK[id]:
-		letter._set_active(is_active, type)
-
 
 func _prepare_index_store():
 	# draw the board and convert to array, also create board of index
@@ -583,6 +583,8 @@ func _print_level_edit():
 		Background.remove_child(n)
 		n.queue_free()
 		
+	LIST_OF_BLOCK.clear()
+		
 #	print(INDEX_STORE)
 #	print(LEVEL_N_WORDS)
 
@@ -614,7 +616,6 @@ func _print_level_edit():
 			pos_count += 1
 			Frontground.add_child(mob)
 			LIST_OF_BLOCK[i].append(mob)
-#		print(LIST_OF_BLOCK[i])
 
 	_test_spawn_swipe_block()
 	time_start = Time.get_unix_time_from_system()
@@ -833,6 +834,7 @@ func _on_btn_help_pressed():
 func _test_spawn_swipe_block():
 	
 	list_of_swipe_block.clear()
+	swipe_block_pos.clear()
 	
 	for n in zone.get_children():
 		if n.name == "Center":
@@ -879,6 +881,7 @@ func _test_spawn_swipe_block():
 #		print("connected func")
 		zone.add_child(mob)
 		list_of_swipe_block.append(mob)
+		swipe_block_pos.append(mob.position)
 
 
 	pass
@@ -909,9 +912,6 @@ func _update_something_when_add_or_remove_from_stack(id):
 
 func _add_or_remove_from_stack(id):
 	
-	if id in connected_id:
-		return
-	
 	var point = list_of_swipe_block[id].global_position + (list_of_swipe_block[id].size / 2)
 	
 	if len(connected_id) == 0 and not was_added_or_removed:
@@ -925,9 +925,14 @@ func _add_or_remove_from_stack(id):
 		return
 		
 	if len(connected_id) == 1 and not was_added_or_removed:
+		if id in connected_id:
+			return
+		
 		if connected_id[0] == id:
 			return
-			
+		
+		if id in connected_id:
+			return
 		_update_something_when_add_or_remove_from_stack(id)
 		line.set_point_position(point_count-1, point)
 		line.add_point(point)
@@ -937,6 +942,7 @@ func _add_or_remove_from_stack(id):
 
 	
 	if not was_added_or_removed:
+		
 		if connected_id[-1] == id:
 			return
 		if connected_id[-2] == id:
@@ -957,6 +963,8 @@ func _add_or_remove_from_stack(id):
 		else:
 			if len(connected_id) == max_stack:
 				return
+			if id in connected_id:
+				return
 			_update_something_when_add_or_remove_from_stack(id)
 			line.set_point_position(point_count-1, point)
 			line.add_point(point)
@@ -964,4 +972,126 @@ func _add_or_remove_from_stack(id):
 			label_connected_word.text = "".join(connected_letters)
 	
 	return
-#	print(connected_id)
+
+
+func _on_booster_shuffle_pressed():
+	var temp_pos_list = swipe_block_pos.duplicate(true)
+	var rand_pos
+
+	for mob in list_of_swipe_block:
+		
+		var tw = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+		
+		if len(temp_pos_list) == 1:
+			tw.tween_property(
+				mob,
+				"position",
+				center.position - SETTING["playtestSize"]["background"] / 2,
+				SETTING["animationSpeed"]
+			)
+			tw.tween_property(
+				mob,
+				"position",
+				temp_pos_list[0],
+				SETTING["animationSpeed"]
+			)
+			break
+			
+		rand_pos = temp_pos_list[randi() % temp_pos_list.size()]
+		temp_pos_list.erase(rand_pos)
+		print(len(temp_pos_list))
+		
+		tw.tween_property(
+			mob,
+			"position",
+			center.position - SETTING["playtestSize"]["background"] / 2,
+			SETTING["animationSpeed"]
+		)
+		
+		tw.tween_property(
+			mob,
+			"position",
+			rand_pos,
+			SETTING["animationSpeed"]
+		)
+		
+	
+	pass # Replace with function body.
+
+
+func _on_booster_hint_pressed():
+	var is_revealed = false
+
+	
+	var current_letter_id_unrevealed = 0
+	
+	var most_loop = 100
+	var current_loop = 0
+	
+	tween_parallel = create_tween().set_parallel(true).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	
+	while current_loop < most_loop:
+		
+		for word_id in LIST_OF_BLOCK:
+#			print(len(LIST_OF_BLOCK[word_id])) # 3
+#			print(current_letter_id_unrevealed) # 2 is last item
+			# if len(word) >= current_letter, then move to next word
+			if current_letter_id_unrevealed >= len(LIST_OF_BLOCK[word_id]):
+				continue
+			
+			
+			if LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].visible == false:
+				
+				LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].visible = true
+				LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].modulate = 0
+				LIST_OF_BLOCK[word_id][current_letter_id_unrevealed]._set_active(true)
+				is_revealed = true
+				
+				var particle = particle_booster.instantiate()
+				$"..".add_child(particle)
+				
+				particle.position = get_viewport().get_mouse_position()
+				
+				tween_parallel.tween_property(
+					particle,
+					"position",
+					LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].global_position + 
+					LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].size / 2,
+					1
+				)
+				
+				tween_parallel.chain().tween_callback(particle.queue_free)
+				tween_parallel.chain().tween_callback(LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].set.bind("modulate", Color.html("ffffff")))
+				
+#				
+			
+			if is_revealed:
+				break
+				
+		current_letter_id_unrevealed += 1
+		current_loop += 1
+		
+		if is_revealed:
+			break
+
+	for i in LIST_OF_BLOCK:
+		var temp_visible = []
+		for letter in LIST_OF_BLOCK[i]:
+			temp_visible.append(letter.visible)
+		
+		if false not in temp_visible:
+			list_of_unlock_answer[i] = true
+			if false not in list_of_unlock_answer:
+				is_time_started = false
+	
+#	list_of_unlock_answer[i] = true
+#	if false not in list_of_unlock_answer:
+#		is_time_started = false
+
+
+func _on_booster_touch_pressed():
+	pass # Replace with function body.
+
+
+func _on_booster_icon_pressed():
+	pass # Replace with function body.
