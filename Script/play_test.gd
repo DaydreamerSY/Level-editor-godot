@@ -851,6 +851,8 @@ func _test_spawn_swipe_block():
 	
 #	print(num_objects)
 #	print(set_letter)
+
+	var spawm_pos = []
 	
 	for i in range(num_objects):
 		# Calculate the angle for this object
@@ -863,11 +865,18 @@ func _test_spawn_swipe_block():
 		var x = center.position.x - radius * sin(angle_radians) - SETTING["playtestSize"]["background"].x / 2
 		var y = center.position.y - radius * cos(angle_radians) - SETTING["playtestSize"]["background"].y / 2
 
+
+		spawm_pos.append(Vector2(x, y))
+	
+	for i in range(len(spawm_pos)):
+		
+		var rand_i = randi() % spawm_pos.size()
+		
+#		print(len(temp_pos_list))
+		
 		# Instantiate the object and add it to the scene
 		var mob = block_letter.instantiate()
-
-		# Set the position of the object
-		mob.position = Vector2(x, y)
+		mob.position = spawm_pos[rand_i]
 		
 		mob.set("size", SETTING["playtestSize"]["background"])
 				
@@ -882,6 +891,7 @@ func _test_spawn_swipe_block():
 		zone.add_child(mob)
 		list_of_swipe_block.append(mob)
 		swipe_block_pos.append(mob.position)
+		spawm_pos.remove_at(rand_i)
 
 
 	pass
@@ -1057,7 +1067,7 @@ func _on_booster_hint_pressed():
 					"position",
 					LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].global_position + 
 					LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].size / 2,
-					1
+					[]
 				)
 				
 				tween_parallel.chain().tween_callback(particle.queue_free)
