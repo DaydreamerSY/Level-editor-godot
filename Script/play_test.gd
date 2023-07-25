@@ -869,10 +869,12 @@ func _test_spawn_swipe_block():
 		spawm_pos.append(Vector2(x, y))
 	
 	for i in range(len(spawm_pos)):
+		var rand_i = 0
 		
-		var rand_i = randi() % spawm_pos.size()
-		
-#		print(len(temp_pos_list))
+		if len(spawm_pos) == 1:
+			rand_i = 0
+		else:
+			rand_i = randi() % len(spawm_pos)
 		
 		# Instantiate the object and add it to the scene
 		var mob = block_letter.instantiate()
@@ -1038,8 +1040,6 @@ func _on_booster_hint_pressed():
 	var most_loop = 100
 	var current_loop = 0
 	
-	tween_parallel = create_tween().set_parallel(true).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	
 	while current_loop < most_loop:
 		
 		for word_id in LIST_OF_BLOCK:
@@ -1055,7 +1055,10 @@ func _on_booster_hint_pressed():
 				LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].visible = true
 				LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].modulate = 0
 				LIST_OF_BLOCK[word_id][current_letter_id_unrevealed]._set_active(true)
+				
 				is_revealed = true
+				
+				tween_parallel = create_tween().set_parallel(true).set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 				
 				var particle = particle_booster.instantiate()
 				$"..".add_child(particle)
@@ -1067,7 +1070,7 @@ func _on_booster_hint_pressed():
 					"position",
 					LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].global_position + 
 					LIST_OF_BLOCK[word_id][current_letter_id_unrevealed].size / 2,
-					[]
+					1
 				)
 				
 				tween_parallel.chain().tween_callback(particle.queue_free)

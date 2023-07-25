@@ -36,13 +36,13 @@ offset_bottom = -800.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+[node name="bling_bling" type="GPUParticles2D" parent="."]
 process_material = SubResource("ParticleProcessMaterial_y0iao")
 texture = ExtResource("1_ujfan")
 speed_scale = 3.0
 fixed_fps = 60
 
-[node name="particle_starlight" type="GPUParticles2D" parent="."]
+[node name="starlight" type="GPUParticles2D" parent="."]
 process_material = ExtResource("2_g47ur")
 texture = ExtResource("3_wgnun")
 speed_scale = 4.95
