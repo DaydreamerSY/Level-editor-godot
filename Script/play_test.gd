@@ -149,9 +149,7 @@ func _ready():
 	line = $"../Controll_zone/Line"
 	
 	Background.visible = SETTING["showBackground"]
-	
-	print(SETTING["letterSize"]["background"])
-	print(SETTING["letterSize"]["background"] / 2)
+
 
 	pass # Replace with function body.
 
