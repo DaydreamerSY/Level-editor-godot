@@ -1,7 +1,7 @@
 extends Control
 
-@export var _seconds : int
-@export var _fade_delay: int
+@export var _vid_length : float
+@export var _fade_delay: float
 @export var _video : String
 
 @export var Background_vid : VideoStreamPlayer
@@ -27,6 +27,10 @@ func _ready():
 	bg_2.play()
 	current_vid_playing = 2
 	
+	if _fade_delay == 0:
+		bg_2.connect("finished", bg_2.play)
+		pass
+	
 	time_start = Time.get_unix_time_from_system()
 	pass # Replace with function body.
 
@@ -40,15 +44,20 @@ func _process(delta):
 #	var minutes = elapsed / 60
 #	var seconds = int(fmod(elapsed , 60))
 #	var str_elapsed = "%02d : %02d" % [minutes, seconds]
-	print("elapsed : ", elapsed)
+#	print("elapsed : ", elapsed)
 	
 
-	if elapsed >= (_seconds - _fade_delay):
-			_switch_video()
-#			print("Current video playing: %s" % [current_vid_playing])
+	if elapsed >= (_vid_length - _fade_delay):
+		_switch_video()
+#		print("Current video playing: %s" % [current_vid_playing])
 
 	pass
-	
+
+
+#func _replay():
+#	bg_2.play()
+
+
 func _switch_video():
 	tween = create_tween()
 	
