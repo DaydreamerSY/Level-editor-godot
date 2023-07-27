@@ -97,7 +97,7 @@ func _ready():
 	Background = $Background
 	Frontground = $Frontground
 	BTN_save = $"../Controll_zone/btn_save"
-	Response_vertical_box = $"../NinePatchRect/Error_List"
+	Response_vertical_box = $"../Controll_zone/Response_zone/Error_List"
 	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
 	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
 	Wordlist_horizontal_box = $Word_list_2

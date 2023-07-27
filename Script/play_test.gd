@@ -136,17 +136,17 @@ func _ready():
 	sfx_Rotate = $"../../Sound/SFX/Card_shuffle"
 	sfx_invalid = $"../../Sound/SFX/Word_invalid"
 	
-	zone = $"../Controll_zone/Swipe_zone_center"
-	center = $"../Controll_zone/Swipe_zone_center/Center"
+	zone = $"../Edit_zone/Swipe_zone_center"
+	center = $"../Edit_zone/Swipe_zone_center/Center"
 	
-	background_connected_word = $"../Controll_zone/Connected_text"
-	label_connected_word = $"../Controll_zone/Connected_text/Label"
-	hooray_moment_bg = $"../Controll_zone/Hooray_moment"
-	time_display = $"../Controll_zone/time_label"
-	invalid_notif = $"../Controll_zone/Invalid_notif"
-	invalid_notif_text = $"../Controll_zone/Invalid_notif/Label_color"
+	background_connected_word = $"../Edit_zone/Connected_text"
+	label_connected_word = $"../Edit_zone/Connected_text/Label"
+	hooray_moment_bg = $"../Edit_zone/Hooray_moment"
+	time_display = $"../Edit_zone/time_label"
+	invalid_notif = $"../Edit_zone/Invalid_notif"
+	invalid_notif_text = $"../Edit_zone/Invalid_notif/Label_color"
 	
-	line = $"../Controll_zone/Line"
+	line = $"../Edit_zone/Line"
 	
 	Background.visible = SETTING["showBackground"]
 
