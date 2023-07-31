@@ -33,6 +33,15 @@ var PADDING = {"top": 5, "right": 5, "bottom": 0, "left": 0}
 var BOARD_BG = []
 var BOARD_FG = []
 
+var PATH_FOLDER_CHAPTER = "user://Level Layout/"
+var PATH_FOLDER_LEVEL_CONTENT = "user://Level Content/"
+
+var PATH_CHAPTER = "user://Level Layout/chapter%d.json"
+var PATH_LEVEL_CONTENT = "user://Level Content/words1.0.26.csv"
+
+var PATH_BACKGROUND_IMG = "user://Background/Wallpaper/"
+var PATH_BACKGROUND_OGV = "user://Background/LiveWallpaper/"
+
 var INDEX_STORE = {}
 var LEVEL_EDIT = []
 
@@ -72,9 +81,12 @@ var Background
 var Frontground
 var BTN_save
 var Response_vertical_box
+var minimal_error_list
 var input_chapter
 var input_level
 var Wordlist_horizontal_box
+var is_minimal = false
+var control_zone
 
 # SFX/BGM
 var sfx_Card_pick
@@ -96,11 +108,13 @@ func _ready():
 	
 	Background = $Background
 	Frontground = $Frontground
-	BTN_save = $"../Controll_zone/btn_save"
-	Response_vertical_box = $"../NinePatchRect/Error_List"
-	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
-	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
+	BTN_save = $"../Control_zone/btn_save"
+	Response_vertical_box = $"../Control_zone/Error_list/Error_List"
+	input_chapter = $"../Control_zone/chapter_select/label_chapter/selected_chapter"
+	input_level = $"../Control_zone/chapter_select/label_level/selected_level"
 	Wordlist_horizontal_box = $Word_list_2
+	minimal_error_list = $Minimal_error
+	control_zone = $"../Control_zone"
 	
 	sfx_Card_pick = $"../../Sound/SFX/Card_pick"
 	sfx_Card_drop = $"../../Sound/SFX/Card_drop"
@@ -121,6 +135,17 @@ func _ready():
 				row.append(mob)
 	#			print("Install block " + str(mob.position.x) + ", " + str(mob.position.y))
 			BOARD_BG.append(row)
+			
+			
+	var dir_checker = DirAccess.open(PATH_FOLDER_CHAPTER)
+	if dir_checker == null:
+		var dir_creater = DirAccess.open("user://")
+		dir_creater.make_dir(PATH_FOLDER_CHAPTER)
+		
+	dir_checker = DirAccess.open(PATH_FOLDER_LEVEL_CONTENT)
+	if dir_checker == null:
+		var dir_creater = DirAccess.open("user://")
+		dir_creater.make_dir(PATH_FOLDER_LEVEL_CONTENT)
 
 	pass # Replace with function body.
 
@@ -168,7 +193,7 @@ func _input( event ):
 
 
 func _load_database(chapter):
-	var path = "user://Chapter%d.json" % [chapter]
+	var path = PATH_CHAPTER % [chapter]
 #	print(path)
 	var content = FileAccess.get_file_as_string(path)
 #	var content = file.get_file_as_string()
@@ -186,8 +211,10 @@ func _load_database(chapter):
 
 func _get_data_from_csv():
 	var csv = []
+	var path = PATH_LEVEL_CONTENT
+	
 	LIST_WORDS = []
-	var file = FileAccess.open("user://words1.0.26.csv", FileAccess.READ)
+	var file = FileAccess.open(path, FileAccess.READ)
 	while !file.eof_reached():
 		var csv_rows = file.get_csv_line(",") # I use tab as delimiter
 		csv.append(csv_rows)
@@ -215,7 +242,7 @@ func _get_data_from_csv():
 
 
 func _save_database(chapter):
-	var path = "user://Chapter%d.json" % [chapter]
+	var path = PATH_CHAPTER % [chapter]
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_line(JSON.stringify (DATA_BOARD, "\t"))
 	file.close()
@@ -667,6 +694,9 @@ func _check_valid():
 	for n in Response_vertical_box.get_children():
 		Response_vertical_box.remove_child(n)
 		n.queue_free()
+		
+
+	var is_set_first_error = false
 	
 	for res in response_list:
 		all_valid = all_valid and res['valid']
@@ -685,6 +715,15 @@ func _check_valid():
 		
 		Response_vertical_box.add_child(debug1)
 		Response_vertical_box.add_child(debug2)
+		
+		if not is_set_first_error and not res['valid']:
+			minimal_error_list.text = head + ": " + tail
+			minimal_error_list.set("theme_override_colors/font_color", COLOR_CODE[res['color']])
+			is_set_first_error = true
+		
+	if all_valid:
+		minimal_error_list.text = ""
+		pass
 
 	_set_legit(all_valid)
 	if not all_valid:
@@ -979,13 +1018,32 @@ func _play_sound(when):
 			sfx_invalid.play()
 
 
-func _on_close_pressed():
-	_play_sound("click")
-	$"../Help_panel".visible = false
-	pass # Replace with function body.
-
-
-func _on_btn_help_pressed():
-	_play_sound("click")
-	$"../Help_panel".visible = true
+func _on_btn_hide_pressed():
+	
+	tween_parallel = create_tween()
+	
+	if not is_minimal:
+		is_minimal = true
+		minimal_error_list.visible = true
+		$"../btn_hide".set("flip_h", true)
+#		old_position = control_zone.position
+#		control_zone.position.x += control_zone.size.x
+		
+		tween_parallel.tween_property(
+			control_zone,
+			"position:x",
+			control_zone.position.x + control_zone.size.x,
+			SETTING["animationSpeed"]
+		)
+		
+	else:
+		is_minimal = false
+		minimal_error_list.visible = false
+		$"../btn_hide".set("flip_h", false)
+		tween_parallel.tween_property(
+			control_zone,
+			"position:x",
+			control_zone.position.x - control_zone.size.x,
+			SETTING["animationSpeed"]
+		)
 	pass # Replace with function body.

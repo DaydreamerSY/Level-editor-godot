@@ -48,13 +48,13 @@ func _load_csv():
 
 func _on_playtest_mode_pressed():
 	$".".visible = false
-	$"../Play_test".visible = true
-	$"../Play_test/Controll_zone/chapter_select/label_level/selected_level".text = $Controll_zone/chapter_select/label_level/selected_level.text
-	$"../Play_test/Edit_zone"._on_btn_load_pressed()
+	$"../Playtest_mode".visible = true
+	$"../Playtest_mode/Control_zone/chapter_select/label_level/selected_level".text = $Control_zone/chapter_select/label_level/selected_level.text
+	$"../Playtest_mode/Edit_zone"._on_btn_load_pressed()
 
 
 func _on_edit_mode_pressed():
 	$".".visible = true
-	$"../Play_test".visible = false
-	$Controll_zone/chapter_select/label_level/selected_level.text = $"../Play_test/Controll_zone/chapter_select/label_level/selected_level".text
+	$"../Playtest_mode".visible = false
+	$Control_zone/chapter_select/label_level/selected_level.text = $"../Playtest_mode/Control_zone/chapter_select/label_level/selected_level".text
 	$Edit_zone._on_btn_load_pressed()

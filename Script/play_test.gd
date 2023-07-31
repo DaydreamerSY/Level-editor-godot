@@ -36,6 +36,13 @@ var PADDING = {"top": 5, "right": 5, "bottom": 0, "left": 0}
 var BOARD_BG = []
 var BOARD_FG = []
 
+var PATH_FOLDER_CHAPTER = "user://Level Layout/"
+var PATH_FOLDER_LEVEL_CONTENT = "user://Level Content/"
+
+var PATH_CHAPTER = "user://Level Layout/chapter%d.json"
+var PATH_LEVEL_CONTENT = "user://Level Content/words1.0.26.csv"
+
+
 var INDEX_STORE = {}
 var LEVEL_EDIT = []
 
@@ -77,6 +84,8 @@ var Response_vertical_box
 var input_chapter
 var input_level
 var Wordlist_horizontal_box
+var is_minimal = false
+var control_zone
 
 # SFX/BGM
 var sfx_Card_pick
@@ -124,11 +133,12 @@ func _ready():
 	
 	Background = $Background
 	Frontground = $Frontground
-	BTN_save = $"../Controll_zone/btn_save"
+	BTN_save = $"../Control_zone/btn_save"
 #	Response_vertical_box = $"../NinePatchRect/Error_List"
-	input_chapter = $"../Controll_zone/chapter_select/label_chapter/selected_chapter"
-	input_level = $"../Controll_zone/chapter_select/label_level/selected_level"
+	input_chapter = $"../Control_zone/chapter_select/label_chapter/selected_chapter"
+	input_level = $"../Control_zone/chapter_select/label_level/selected_level"
 	Wordlist_horizontal_box = $Word_list_2
+	control_zone = $"../Control_zone"
 	
 	sfx_Card_pick = $"../../Sound/SFX/Card_pick"
 	sfx_Card_drop = $"../../Sound/SFX/Card_drop"
@@ -136,17 +146,17 @@ func _ready():
 	sfx_Rotate = $"../../Sound/SFX/Card_shuffle"
 	sfx_invalid = $"../../Sound/SFX/Word_invalid"
 	
-	zone = $"../Controll_zone/Swipe_zone_center"
-	center = $"../Controll_zone/Swipe_zone_center/Center"
+	zone = $"../Fixed_nodes/Swipe_zone_center"
+	center = $"../Fixed_nodes/Swipe_zone_center/Center"
 	
-	background_connected_word = $"../Controll_zone/Connected_text"
-	label_connected_word = $"../Controll_zone/Connected_text/Label"
-	hooray_moment_bg = $"../Controll_zone/Hooray_moment"
-	time_display = $"../Controll_zone/time_label"
-	invalid_notif = $"../Controll_zone/Invalid_notif"
-	invalid_notif_text = $"../Controll_zone/Invalid_notif/Label_color"
+	background_connected_word = $"../Fixed_nodes/Connected_text"
+	label_connected_word = $"../Fixed_nodes/Connected_text/Label"
+	hooray_moment_bg = $"../Fixed_nodes/Hooray_moment"
+	time_display = $"../Fixed_nodes/time_label"
+	invalid_notif = $"../Fixed_nodes/Invalid_notif"
+	invalid_notif_text = $"../Fixed_nodes/Invalid_notif/Label_color"
 	
-	line = $"../Controll_zone/Line"
+	line = $"../Fixed_nodes/Line"
 	
 	Background.visible = SETTING["showBackground"]
 
@@ -180,6 +190,10 @@ func _process(delta):
 
 
 func _input( event ):
+	
+	if Input.is_action_pressed("ui_right"):
+		_on_btn_load_pressed()
+	
 	if event is InputEventMouseButton:
 		if event.button_index == 1 and event.is_pressed():
 			mouse_left_down = true
@@ -409,7 +423,7 @@ func _random_effect(mob):
 
 
 func _load_database(chapter):
-	var path = "user://chapter%d.json" % [chapter]
+	var path = PATH_CHAPTER % [chapter]
 #	print(path)
 	var content = FileAccess.get_file_as_string(path)
 #	var content = file.get_file_as_string()
@@ -427,8 +441,10 @@ func _load_database(chapter):
 
 func _get_data_from_csv():
 	var csv = []
+	var path = PATH_LEVEL_CONTENT
+	
 	LIST_WORDS = []
-	var file = FileAccess.open("user://words1.0.26.csv", FileAccess.READ)
+	var file = FileAccess.open(path, FileAccess.READ)
 	while !file.eof_reached():
 		var csv_rows = file.get_csv_line(",") # I use tab as delimiter
 		csv.append(csv_rows)
@@ -456,7 +472,7 @@ func _get_data_from_csv():
 
 
 func _save_database(chapter):
-	var path = "user://chapter%d.json" % [chapter]
+	var path = PATH_CHAPTER % [chapter]
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_line(JSON.stringify (DATA_BOARD, "\t"))
 	file.close()
@@ -1106,3 +1122,40 @@ func _on_booster_touch_pressed():
 
 func _on_booster_icon_pressed():
 	pass # Replace with function body.
+
+
+func _on_btn_hide_pressed():
+	tween_parallel = create_tween()
+	
+	if not is_minimal:
+#		is_minimal = true
+#		minimal_error_list.visible = true
+		$"../btn_hide".set("flip_h", true)
+#		old_position = control_zone.position
+#		control_zone.position.x += control_zone.size.x
+		
+		tween_parallel.tween_property(
+			control_zone,
+			"position:x",
+			control_zone.position.x + control_zone.size.x,
+			0.1
+		)
+		tween_parallel.tween_callback(_trigger_is_minimal)
+		
+	else:
+#		is_minimal = false
+#		minimal_error_list.visible = false
+		$"../btn_hide".set("flip_h", false)
+		tween_parallel.tween_property(
+			control_zone,
+			"position:x",
+			control_zone.position.x - control_zone.size.x,
+			0.1
+		)
+		tween_parallel.tween_callback(_trigger_is_minimal)
+	pass # Replace with function body.
+	
+
+func _trigger_is_minimal():
+#	print(SETTING)
+	is_minimal = !is_minimal
