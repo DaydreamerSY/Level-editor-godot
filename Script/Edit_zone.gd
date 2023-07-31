@@ -33,14 +33,8 @@ var PADDING = {"top": 5, "right": 5, "bottom": 0, "left": 0}
 var BOARD_BG = []
 var BOARD_FG = []
 
-var PATH_FOLDER_CHAPTER = "user://Level Layout/"
-var PATH_FOLDER_LEVEL_CONTENT = "user://Level Content/"
-
 var PATH_CHAPTER = "user://Level Layout/chapter%d.json"
 var PATH_LEVEL_CONTENT = "user://Level Content/words1.0.26.csv"
-
-var PATH_BACKGROUND_IMG = "user://Background/Wallpaper/"
-var PATH_BACKGROUND_OGV = "user://Background/LiveWallpaper/"
 
 var INDEX_STORE = {}
 var LEVEL_EDIT = []
@@ -135,17 +129,6 @@ func _ready():
 				row.append(mob)
 	#			print("Install block " + str(mob.position.x) + ", " + str(mob.position.y))
 			BOARD_BG.append(row)
-			
-			
-	var dir_checker = DirAccess.open(PATH_FOLDER_CHAPTER)
-	if dir_checker == null:
-		var dir_creater = DirAccess.open("user://")
-		dir_creater.make_dir(PATH_FOLDER_CHAPTER)
-		
-	dir_checker = DirAccess.open(PATH_FOLDER_LEVEL_CONTENT)
-	if dir_checker == null:
-		var dir_creater = DirAccess.open("user://")
-		dir_creater.make_dir(PATH_FOLDER_LEVEL_CONTENT)
 
 	pass # Replace with function body.
 

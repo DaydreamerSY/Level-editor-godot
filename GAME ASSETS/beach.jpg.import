@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jkir2jegpak6"
-path="res://.godot/imported/sean-oulashin-KMn4VEeEPR8-unsplash.jpg-7e7bef478029c3e0b395051e5be4f4a0.ctex"
+path="res://.godot/imported/beach.jpg-61d4fce5d2285630812b44e8cbb9472f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GAME ASSETS/sean-oulashin-KMn4VEeEPR8-unsplash.jpg"
-dest_files=["res://.godot/imported/sean-oulashin-KMn4VEeEPR8-unsplash.jpg-7e7bef478029c3e0b395051e5be4f4a0.ctex"]
+source_file="res://GAME ASSETS/beach.jpg"
+dest_files=["res://.godot/imported/beach.jpg-61d4fce5d2285630812b44e8cbb9472f.ctex"]
 
 [params]
 
