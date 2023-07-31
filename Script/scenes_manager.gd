@@ -64,6 +64,7 @@ func _create_change_livewallpaper():
 	var dir = DirAccess.open(PATH_BACKGROUND_OGV)
 	print(dir.get_files())
 	
+	setting_livewallpaper_dropdown.add_item("None")
 	setting_livewallpaper_dropdown.add_item("Default")
 	
 	for ogv in dir.get_files():
@@ -75,19 +76,21 @@ func _on_dropdown_wallpaper_item_selected(index):
 	var img_path = setting_change_wallpaper[index]
 	var image = Image.new()
 	image.load(img_path)
-	
+
 	var image_texture = ImageTexture.new()
 	image_texture.set_image(image)
 	
 	wallpaper.set("texture", image_texture)
-
-	pass # Replace with function body.
-	pass # Replace with function body.
+	
 
 
 func _on_dropdown_livewallpaper_item_selected(index):
+	if index == 0:
+		livewallpaper_controller.visible = false
+	else:
+		livewallpaper_controller.visible = true
 	livewallpaper_controller._load_ogv(setting_change_livewallpaper[index])
-	pass # Replace with function body.
+
 
 
 
