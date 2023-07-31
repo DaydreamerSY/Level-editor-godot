@@ -114,3 +114,11 @@ func _on_btn_setting_close_pressed():
 	pass # Replace with function body.
 
 
+func _on_check_box_flip_h_pressed():
+	wallpaper.set("flip_h", !wallpaper.get("flip_h"))
+	pass # Replace with function body.
+
+
+func _on_check_box_flip_h_2_pressed():
+	wallpaper.set("flip_v", !wallpaper.get("flip_v"))
+	pass # Replace with function body.
