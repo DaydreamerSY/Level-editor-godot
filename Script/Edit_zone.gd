@@ -947,7 +947,7 @@ func _set_legit(legit):
 func _on_btn_next_level_pressed():
 	_play_sound("click")
 	SELECTED_LEVEL += 1
-	if SELECTED_LEVEL == 100:
+	if int(fmod(SELECTED_LEVEL , 100)) == 0:
 		SELECTED_CHAPTER += 1
 		input_chapter.text = str(SELECTED_CHAPTER)
 	input_level.text = str(SELECTED_LEVEL + 1)
