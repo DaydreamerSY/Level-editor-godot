@@ -12,16 +12,23 @@ var list_of_dir = [
 	PATH_BACKGROUND_OGV
 ]
 
+var wallpaper
+var livewallpaper_controller
+
 var setting_wallpaper_dropdown
 var setting_change_wallpaper = ["res://GAME ASSETS/beach.jpg"]
 
-#var setting_livewallpaper_dropdown
-#var setting_change_livewallpaper = ["res://GAME ASSETS/beach.jpg"]
+var setting_livewallpaper_dropdown
+var setting_change_livewallpaper = ["None", "res://GAME ASSETS/starlight.ogv"]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
+	wallpaper = $wallpaper
+	livewallpaper_controller = $livewallpaper_controller
 
 	setting_wallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/dropdown_wallpaper
+	setting_livewallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/dropdown_livewallpaper
 
 	var dir_creater = DirAccess.open("user://")
 	var dir_checker = null
@@ -32,6 +39,7 @@ func _ready():
 			dir_creater.make_dir_recursive(dir)
 	
 	_create_change_wallpaper()
+	_create_change_livewallpaper()
 	pass # Replace with function body.
 
 
@@ -50,6 +58,37 @@ func _create_change_wallpaper():
 		setting_wallpaper_dropdown.add_item(img)
 		setting_change_wallpaper.append(PATH_BACKGROUND_IMG + img)
 	pass
+
+
+func _create_change_livewallpaper():
+	var dir = DirAccess.open(PATH_BACKGROUND_OGV)
+	print(dir.get_files())
+	
+	setting_livewallpaper_dropdown.add_item("Default")
+	
+	for ogv in dir.get_files():
+		setting_livewallpaper_dropdown.add_item(ogv)
+		setting_change_livewallpaper.append(PATH_BACKGROUND_OGV + ogv)
+	pass
+
+func _on_dropdown_wallpaper_item_selected(index):
+	var img_path = setting_change_wallpaper[index]
+	var image = Image.new()
+	image.load(img_path)
+	
+	var image_texture = ImageTexture.new()
+	image_texture.set_image(image)
+	
+	wallpaper.set("texture", image_texture)
+
+	pass # Replace with function body.
+	pass # Replace with function body.
+
+
+func _on_dropdown_livewallpaper_item_selected(index):
+	livewallpaper_controller._load_ogv(setting_change_livewallpaper[index])
+	pass # Replace with function body.
+
 
 
 func _on_close_pressed():
@@ -72,16 +111,3 @@ func _on_btn_setting_close_pressed():
 	pass # Replace with function body.
 
 
-
-func _on_dropdown_wallpaper_item_selected(index):
-	var img_path = setting_change_wallpaper[index]
-	var image = Image.new()
-	image.load(img_path)
-	
-	var image_texture = ImageTexture.new()
-	image_texture.set_image(image)
-	
-	$Background.set("texture", image_texture)
-
-	pass # Replace with function body.
-	pass # Replace with function body.

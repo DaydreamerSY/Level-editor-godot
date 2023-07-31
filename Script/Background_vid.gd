@@ -108,3 +108,11 @@ func _move_to_behind():
 			current_vid_playing = 1
 			pass
 	pass
+
+func _load_ogv(path):
+	bg_1.stream = load(path)
+	bg_2.stream = load(path)
+	bg_2.play()
+	current_vid_playing = 2
+	time_start = Time.get_unix_time_from_system()
+	pass
