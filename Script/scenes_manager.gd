@@ -27,8 +27,8 @@ func _ready():
 	wallpaper = $wallpaper
 	livewallpaper_controller = $livewallpaper_controller
 
-	setting_wallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/dropdown_wallpaper
-	setting_livewallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/dropdown_livewallpaper
+	setting_wallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/Wallpaper/dropdown_wallpaper
+	setting_livewallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/Live_wallpaper/dropdown_livewallpaper
 
 	var dir_creater = DirAccess.open("user://")
 	var dir_checker = null
@@ -125,9 +125,13 @@ func _on_check_box_flip_h_2_pressed():
 
 
 func _on_update_pressed():
+	var label_warning = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning"
+	var popup_update_warning = $"Popups-notif/Update_warning"
 	var output = []
 	OS.execute("git", ["fetch"], output)
 	OS.execute("git", ["reset", "--hard", "origin"], output)
+	for i in output:
+		label_warning += i
 	print(output)
 
 
