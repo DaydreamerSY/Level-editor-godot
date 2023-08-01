@@ -131,5 +131,6 @@ func _on_btn_next_chapter_pressed():
 
 
 func _on_btn_load_pressed():
+	SELECTED_CHAPTER = int(input_chapter.text)
 	_load_chapter_view()
 	pass # Replace with function body.
