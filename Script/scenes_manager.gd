@@ -122,3 +122,8 @@ func _on_check_box_flip_h_pressed():
 func _on_check_box_flip_h_2_pressed():
 	wallpaper.set("flip_v", !wallpaper.get("flip_v"))
 	pass # Replace with function body.
+
+
+func _on_update_pressed():
+	var output = []
+	OS.execute("git", ["pull", "--force"], output)
