@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://chjk3wavcl6cg"]
+
+[ext_resource type="FontFile" uid="uid://vbitfxhto6v6" path="res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf" id="1_h56bq"]
+
+[node name="ChapterItem" type="VBoxContainer"]
+
+[node name="Level_name" type="Label" parent="."]
+layout_mode = 2
+mouse_filter = 1
+theme_override_fonts/font = ExtResource("1_h56bq")
+theme_override_font_sizes/font_size = 51
+text = "Level 1"
+
+[node name="Level_content" type="GridContainer" parent="."]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+size_flags_vertical = 3
+columns = 3

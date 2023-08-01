@@ -512,7 +512,6 @@ func _load_level(selected_level):
 		list_of_unlock_answer.append(false)
 
 
-
 func _prepare_index_store():
 	# draw the board and convert to array, also create board of index
 	var row_ele_count = 0

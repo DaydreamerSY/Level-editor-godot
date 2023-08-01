@@ -131,11 +131,25 @@ func _on_update_pressed():
 	OS.execute("git", ["fetch"], output)
 	OS.execute("git", ["reset", "--hard", "origin"], output)
 	for i in output:
-		label_warning.text += i
+		label_warning.text += "- %s" % [i]
 	popup_update_warning.visible = true
 	print(output)
 
 
 func _on_check_box_edit_border_pressed():
 	$Edit_mode/Edit_zone/Background_border.visible = !$Edit_mode/Edit_zone/Background_border.visible
+	pass # Replace with function body.
+
+
+
+
+func _on_texture_button_toggled(button_pressed):
+	if button_pressed:
+		$Edit_chapter_mode.visible = true
+		$Edit_mode.visible = false
+		$Playtest_mode.visible = false
+	else:
+		$Edit_chapter_mode.visible = false
+		$Edit_mode.visible = true
+		$Playtest_mode.visible = false
 	pass # Replace with function body.
