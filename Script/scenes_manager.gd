@@ -21,6 +21,10 @@ var setting_change_wallpaper = ["res://GAME ASSETS/beach.jpg"]
 var setting_livewallpaper_dropdown
 var setting_change_livewallpaper = ["None", "res://GAME ASSETS/starlight.ogv"]
 
+var edit_mode
+var test_mode
+var view_mode
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	
@@ -29,6 +33,10 @@ func _ready():
 
 	setting_wallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/Wallpaper/dropdown_wallpaper
 	setting_livewallpaper_dropdown = $Setting_screen/Setting_screen/MarginContainer/Setting/Live_wallpaper/dropdown_livewallpaper
+
+	edit_mode = $Edit_mode
+	test_mode = $Playtest_mode
+	view_mode = $Edit_chapter_mode
 
 	var dir_creater = DirAccess.open("user://")
 	var dir_checker = null
@@ -145,11 +153,35 @@ func _on_check_box_edit_border_pressed():
 
 func _on_texture_button_toggled(button_pressed):
 	if button_pressed:
-		$Edit_chapter_mode.visible = true
-		$Edit_mode.visible = false
-		$Playtest_mode.visible = false
+		view_mode.visible = true
+		edit_mode.visible = false
+		test_mode.visible = false
 	else:
-		$Edit_chapter_mode.visible = false
-		$Edit_mode.visible = true
-		$Playtest_mode.visible = false
+		view_mode.visible = false
+		edit_mode.visible = true
+		test_mode.visible = false
+	pass # Replace with function body.
+
+
+func _on_playtest_mode_pressed():
+	edit_mode.visible = false
+	test_mode.visible = true
+	
+	$Playtest_mode/Control_zone/chapter_select/label_chapter/selected_chapter.text = $Edit_mode/Control_zone/chapter_select/label_chapter/selected_chapter.text
+	$Playtest_mode/Control_zone/chapter_select/label_level/selected_level.text = $Edit_mode/Control_zone/chapter_select/label_level/selected_level.text
+	$Edit_mode/Edit_zone._on_btn_load_pressed()
+	pass # Replace with function body.
+
+
+
+
+
+
+func _on_edit_mode_pressed():
+	edit_mode.visible = true
+	test_mode.visible = false
+	
+	$Edit_mode/Control_zone/chapter_select/label_chapter/selected_chapter.text = $Playtest_mode/Control_zone/chapter_select/label_chapter/selected_chapter.text
+	$Edit_mode/Control_zone/chapter_select/label_level/selected_level.text = $Playtest_mode/Control_zone/chapter_select/label_level/selected_level.text
+	$Playtest_mode/Edit_zone._on_btn_load_pressed()
 	pass # Replace with function body.

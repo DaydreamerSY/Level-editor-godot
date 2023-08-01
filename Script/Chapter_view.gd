@@ -37,7 +37,7 @@ func _load_chapter_view():
 	_load_database(SELECTED_CHAPTER)
 	var count = 1
 	for level in LIST_LEVEL:
-		_add_level(count, level)
+		_add_level("Level %s" % [SELECTED_CHAPTER * 100 + count], level)
 		count += 1
 	
 
@@ -95,7 +95,7 @@ func _add_level(name, level):
 	var col = level["h"]
 	var level_item = chapter_item.instantiate()
 	
-	level_item.get_node("Level_name").text = str(name)
+	level_item.get_node("Level_name").text = name
 	level_item.get_node("Level_content").set("columns", col)
 	
 	for cell in level["b"]:
