@@ -24,7 +24,7 @@ func _process(delta):
 
 func _on_Area2D_mouse_entered():
 #	self.texture = load("res://GAME ASSETS/v.0.1/Pop Up - Complete/button.png")
-	self.texture = load("res://GAME ASSETS/Block_blue.png")
+	self.texture = load("res://GAME ASSETS/v.0.2 new/Block_blue.png")
 	get_node("Letter").set("theme_override_colors/font_color", Color.WHITE_SMOKE)
 	you_are_hover_on.emit(id)
 	
