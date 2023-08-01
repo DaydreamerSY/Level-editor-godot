@@ -124,6 +124,8 @@ var time_display
 var time_start = 0
 var time_now = 0
 var is_time_started = false
+var current_timer = 0
+var is_time_paused = false
 
 var swipe_block_pos = []
 
@@ -152,7 +154,7 @@ func _ready():
 	background_connected_word = $"../Fixed_nodes/Connected_text"
 	label_connected_word = $"../Fixed_nodes/Connected_text/Label"
 	hooray_moment_bg = $"../Fixed_nodes/Hooray_moment"
-	time_display = $"../Fixed_nodes/time_label"
+	time_display = $"../Fixed_nodes/Timer/time_label"
 	invalid_notif = $"../Fixed_nodes/Invalid_notif"
 	invalid_notif_text = $"../Fixed_nodes/Invalid_notif/Label_color"
 	
@@ -178,14 +180,18 @@ func _process(delta):
 #		print("you are free ")
 		pass
 		
-	if is_time_started:
-		time_now = Time.get_unix_time_from_system()
-		var elapsed = time_now - time_start
-		var minutes = elapsed / 60
-		var seconds = int(fmod(elapsed , 60))
-	#	int(fmod(selected_level , 100))
-		var str_elapsed = "%02d : %02d" % [minutes, seconds]
+	if is_time_started and not is_time_paused:
+#		time_now = Time.get_unix_time_from_system()
+#		var elapsed = time_now - time_start
+#		var minutes = elapsed / 60
+#		var seconds = int(fmod(elapsed , 60))
+#		var str_elapsed = "%02d:%02d" % [minutes, seconds]
 #		print("elapsed : ", str_elapsed)
+#		time_display.text = str_elapseds
+		current_timer += delta
+		var minutes = current_timer / 60
+		var seconds = int(fmod(current_timer , 60))
+		var str_elapsed = "%02d:%02d" % [minutes, seconds]
 		time_display.text = str_elapsed
 
 
@@ -1159,3 +1165,8 @@ func _on_btn_hide_pressed():
 func _trigger_is_minimal():
 #	print(SETTING)
 	is_minimal = !is_minimal
+
+
+func _on_btn_pasuse_toggled(button_pressed):
+	is_time_paused = button_pressed
+	pass # Replace with function body.
