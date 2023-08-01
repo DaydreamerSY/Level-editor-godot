@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bhq38rbgoyvxh"
-path="res://.godot/imported/Button_blue_Dictionary_press.png-3501d6a74b8b2096f46f1399eec7cf54.ctex"
+uid="uid://lep58aasjd02"
+path="res://.godot/imported/Button_green-02.png-a1250879f38af675c81661b0449d11a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GAME ASSETS/Button_blue_Dictionary_press.png"
-dest_files=["res://.godot/imported/Button_blue_Dictionary_press.png-3501d6a74b8b2096f46f1399eec7cf54.ctex"]
+source_file="res://GAME ASSETS/v.0.2 new/Button_green-02.png"
+dest_files=["res://.godot/imported/Button_green-02.png-a1250879f38af675c81661b0449d11a2.ctex"]
 
 [params]
 

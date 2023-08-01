@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blrixv2nmop03"
-path="res://.godot/imported/Block_blue.png-c905fe6bf6d1fe82e07ee561112bf9bd.ctex"
+uid="uid://bo7yh8mgffayp"
+path="res://.godot/imported/Button_Red_press.png-c06edd21aac5e9ed8d354258867b9e3e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GAME ASSETS/Block_blue.png"
-dest_files=["res://.godot/imported/Block_blue.png-c905fe6bf6d1fe82e07ee561112bf9bd.ctex"]
+source_file="res://GAME ASSETS/v.0.2 new/Button_Red_press.png"
+dest_files=["res://.godot/imported/Button_Red_press.png-c06edd21aac5e9ed8d354258867b9e3e.ctex"]
 
 [params]
 

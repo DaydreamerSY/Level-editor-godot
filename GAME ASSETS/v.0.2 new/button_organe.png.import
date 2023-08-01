@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgsvx2xeheeef"
-path="res://.godot/imported/Button_blue_How to play.png-979e7c2581d81f04148cd5bd344ad4be.ctex"
+uid="uid://woioaxj2w2u2"
+path="res://.godot/imported/button_organe.png-ce42533bbfd6d7a8f5130bdd285aef35.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GAME ASSETS/Button_blue_How to play.png"
-dest_files=["res://.godot/imported/Button_blue_How to play.png-979e7c2581d81f04148cd5bd344ad4be.ctex"]
+source_file="res://GAME ASSETS/v.0.2 new/button_organe.png"
+dest_files=["res://.godot/imported/button_organe.png-ce42533bbfd6d7a8f5130bdd285aef35.ctex"]
 
 [params]
 

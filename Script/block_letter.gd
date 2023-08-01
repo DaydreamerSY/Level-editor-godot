@@ -29,7 +29,7 @@ func _set_active(is_active, type=1):
 	if is_active:
 		match type:
 			1:
-				self.texture = load("res://GAME ASSETS/Block_blue.png")
+				self.texture = load("res://GAME ASSETS/v.0.2 new/Block_blue.png")
 			2:
 				self.texture = load("res://GAME ASSETS/v.0.1/Action Phase/Block_passive.png")
 #		self.set("size", Vector2(60, 60))

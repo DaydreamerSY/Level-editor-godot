@@ -121,11 +121,13 @@ var was_add_point = false
 var point_count = 0
 
 var time_display
-var time_start = 0
-var time_now = 0
+#var time_start = 0
+#var time_now = 0
 var is_time_started = false
 var current_timer = 0
 var is_time_paused = false
+var btn_pause
+var time_state
 
 var swipe_block_pos = []
 
@@ -154,7 +156,12 @@ func _ready():
 	background_connected_word = $"../Fixed_nodes/Connected_text"
 	label_connected_word = $"../Fixed_nodes/Connected_text/Label"
 	hooray_moment_bg = $"../Fixed_nodes/Hooray_moment"
+	
 	time_display = $"../Fixed_nodes/Timer/time_label"
+	btn_pause = $"../Fixed_nodes/Timer/btn_pause"
+	time_state = $"../Fixed_nodes/Timer/state"
+	
+	
 	invalid_notif = $"../Fixed_nodes/Invalid_notif"
 	invalid_notif_text = $"../Fixed_nodes/Invalid_notif/Label_color"
 	
@@ -191,7 +198,7 @@ func _process(delta):
 		current_timer += delta
 		var minutes = current_timer / 60
 		var seconds = int(fmod(current_timer , 60))
-		var str_elapsed = "%02d:%02d" % [minutes, seconds]
+		var str_elapsed = "%02d : %02d" % [minutes, seconds]
 		time_display.text = str_elapsed
 
 
@@ -333,6 +340,9 @@ func _show_answer(i):
 	list_of_unlock_answer[i] = true
 	if false not in list_of_unlock_answer:
 		is_time_started = false
+		is_time_paused = false
+		btn_pause.set("button_pressed", true)
+		time_state.text = "Stopped"
 	
 	pass
 
@@ -638,7 +648,7 @@ func _print_level_edit():
 			LIST_OF_BLOCK[i].append(mob)
 
 	_test_spawn_swipe_block()
-	time_start = Time.get_unix_time_from_system()
+	current_timer = 0
 	is_time_started = true
 #    set_process(true)
 	pass
@@ -922,7 +932,6 @@ func _test_spawn_swipe_block():
 func _on_add_letter_to_stack(id):
 #	print("Entered: " + set_letter[id])
 	current_letter_selected_id = id
-	
 
 func _on_move_to_next_letter(id):
 #	print("Exited: " + set_letter[id])
@@ -938,6 +947,11 @@ func _update_something_when_add_or_remove_from_stack(id):
 	list_of_swipe_block[id]._set_active(true)
 	was_added_or_removed = true
 	was_add_point = true
+	
+	is_time_paused = false
+	btn_pause.set("button_pressed", false)
+	time_state.text = "Playing..."
+	
 #	print("Add %s to stack %s" % [set_letter[id], connected_id])
 	pass
 
@@ -1116,10 +1130,6 @@ func _on_booster_hint_pressed():
 			list_of_unlock_answer[i] = true
 			if false not in list_of_unlock_answer:
 				is_time_started = false
-	
-#	list_of_unlock_answer[i] = true
-#	if false not in list_of_unlock_answer:
-#		is_time_started = false
 
 
 func _on_booster_touch_pressed():
@@ -1169,4 +1179,8 @@ func _trigger_is_minimal():
 
 func _on_btn_pasuse_toggled(button_pressed):
 	is_time_paused = button_pressed
+	if button_pressed:
+		time_state.text = "Paused"
+	else:
+		time_state.text = "Playing..."
 	pass # Replace with function body.

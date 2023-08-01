@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5iusmdf4uoc1"
-path="res://.godot/imported/Button_blue_Calendar.png-c0147bcc7da9569cf90b9848ccb575f9.ctex"
+uid="uid://bgsvx2xeheeef"
+path="res://.godot/imported/Button_blue_How to play.png-2f19c3eff32e445894492e55f0d95875.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GAME ASSETS/Button_blue_Calendar.png"
-dest_files=["res://.godot/imported/Button_blue_Calendar.png-c0147bcc7da9569cf90b9848ccb575f9.ctex"]
+source_file="res://GAME ASSETS/v.0.2 new/Button_blue_How to play.png"
+dest_files=["res://.godot/imported/Button_blue_How to play.png-2f19c3eff32e445894492e55f0d95875.ctex"]
 
 [params]
 
