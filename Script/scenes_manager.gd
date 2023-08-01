@@ -127,3 +127,4 @@ func _on_check_box_flip_h_2_pressed():
 func _on_update_pressed():
 	var output = []
 	OS.execute("git", ["pull", "--force"], output)
+	print(output)
