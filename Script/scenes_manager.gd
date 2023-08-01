@@ -131,7 +131,7 @@ func _on_update_pressed():
 	OS.execute("git", ["fetch"], output)
 	OS.execute("git", ["reset", "--hard", "origin"], output)
 	for i in output:
-		label_warning += i
+		label_warning.text += i
 	print(output)
 
 
