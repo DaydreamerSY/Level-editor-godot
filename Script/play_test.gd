@@ -933,6 +933,7 @@ func _on_add_letter_to_stack(id):
 #	print("Entered: " + set_letter[id])
 	current_letter_selected_id = id
 
+
 func _on_move_to_next_letter(id):
 #	print("Exited: " + set_letter[id])
 #	print(connected_id)

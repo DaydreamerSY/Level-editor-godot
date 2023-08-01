@@ -129,3 +129,8 @@ func _on_update_pressed():
 	OS.execute("git", ["fetch"], output)
 	OS.execute("git", ["reset", "--hard", "origin"], output)
 	print(output)
+
+
+func _on_check_box_edit_border_pressed():
+	$Edit_mode/Edit_zone/Background_border.visible = !$Edit_mode/Edit_zone/Background_border.visible
+	pass # Replace with function body.
