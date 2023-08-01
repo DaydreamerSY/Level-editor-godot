@@ -132,6 +132,7 @@ func _on_update_pressed():
 	OS.execute("git", ["reset", "--hard", "origin"], output)
 	for i in output:
 		label_warning.text += i
+	popup_update_warning.visible = true
 	print(output)
 
 
