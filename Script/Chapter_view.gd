@@ -12,8 +12,26 @@ var DATA_BOARD = []
 var LIST_LEVEL = []
 var LIST_WORDS = ""
 
+var HEADER
+var CSV_DATA = []
+var LEVEL_CONTENT_COL_ID = 0
+
 var SELECTED_CHAPTER = 0
 var input_chapter
+
+var default_warning_text = """
+- When SWAP, application will freeze in a short of time, don't spam.
+- Please don't spam.
+- Again: don't spam anything.
+- Spam at your own risk.
+- Developer will NOT take any responsibility.
+- I'll disable button for you.
+- Don't try to spam or you will get f**ked... by yourself :D
+
+--Thanks! 
+"""
+
+var default_ok_text = "\nOk, now you can close this pop-up, thanks for your patient"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -41,7 +59,6 @@ func _load_chapter_view():
 		count += 1
 	
 
-
 func _load_database(chapter):
 	var path = PATH_CHAPTER % [chapter]
 #	print(path)
@@ -57,10 +74,21 @@ func _load_database(chapter):
 #	content = FileAccess.get_file_as_string("user://level-list.txt")
 #	LIST_WORDS = content.split("\n")
 	_get_data_from_csv()
+#	_save_data_to_csv()
+#	_swap_level(160, 161)
+
+
+func _save_database(chapter):
+	var path = PATH_CHAPTER % [chapter]
+#	var path = "user://test_swap.json"
+	var file = FileAccess.open(path, FileAccess.WRITE) 
+	file.store_line(JSON.stringify (DATA_BOARD, "\t"))
+	file.close()
 
 
 func _get_data_from_csv():
 	var csv = []
+	CSV_DATA.clear()
 	var path = PATH_LEVEL_CONTENT
 	
 	LIST_WORDS = []
@@ -70,7 +98,7 @@ func _get_data_from_csv():
 		csv.append(csv_rows)
 	file.close()
 	csv.pop_back() #remove last empty array get_csv_line() has created 
-	var headers = Array(csv[0])
+	HEADER = Array(csv[0])
 	
 	# get data without header
 	var csv_noheaders = csv.duplicate(true)
@@ -78,17 +106,58 @@ func _get_data_from_csv():
 
 	
 	# find column
-	var column_name_id = headers.find("normal words")
-	var level_id = 2
-#	print(column_name_id)
-#
-#	print(csv_noheaders[level_id][column_name_id])
+	LEVEL_CONTENT_COL_ID = HEADER.find("normal words")
 	
+	CSV_DATA.append(HEADER)
 	
 	for i in range(len(csv_noheaders)):
 #		print(csv_noheaders[i - 2][column_name_id])
-		LIST_WORDS.append(csv_noheaders[i][column_name_id])
+#		i is row
+		LIST_WORDS.append(csv_noheaders[i][LEVEL_CONTENT_COL_ID])
+		CSV_DATA.append(csv_noheaders[i])
+			
 	pass
+
+
+func _save_data_to_csv():
+	var file = FileAccess.open(PATH_LEVEL_CONTENT, FileAccess.WRITE)
+	
+	print(len(CSV_DATA))
+	
+	for line in CSV_DATA:
+		file.store_line(",".join(line))
+#	file.store_csv_line(CSV_DATA)
+#	for line in CSV_DATA:
+#		file.store_csv_line(line)
+	file.close()
+	pass
+
+
+func _swap_level(a, b):
+	
+	var _selected_level_a = a - 1
+	var _selected_level_b = b - 1
+	
+	var _temp_level = DATA_BOARD["ListLevelsInChapter"][int(fmod(_selected_level_a , 100))]
+	DATA_BOARD["ListLevelsInChapter"][int(fmod(_selected_level_a , 100))] = DATA_BOARD["ListLevelsInChapter"][int(fmod(_selected_level_b , 100))]
+	DATA_BOARD["ListLevelsInChapter"][int(fmod(_selected_level_b , 100))] = _temp_level
+	
+	
+	var _temp_content = CSV_DATA[a][LEVEL_CONTENT_COL_ID]
+	CSV_DATA[a][LEVEL_CONTENT_COL_ID] = CSV_DATA[b][LEVEL_CONTENT_COL_ID]
+	CSV_DATA[b][LEVEL_CONTENT_COL_ID] = _temp_content
+	
+	_save_database(SELECTED_CHAPTER)
+	_save_data_to_csv()
+	
+#	print("swapped")
+#	print(CSV_DATA[a])
+#	print(CSV_DATA[b])
+#	save to file test but load in orginal file so it caused error
+	
+#	DATA_BOARD["ListLevelsInChapter"][int(fmod(SELECTED_LEVEL , 100))]
+	
+	return [a, b]
 
 
 func _add_level(name, level):
@@ -115,6 +184,7 @@ func _add_level(name, level):
 	scroll_container.add_child(level_item)
 	pass
 
+
 func _on_btn_prev_chapter_pressed():
 	if SELECTED_CHAPTER > 0:
 		SELECTED_CHAPTER -= 1
@@ -133,4 +203,26 @@ func _on_btn_next_chapter_pressed():
 func _on_btn_load_pressed():
 	SELECTED_CHAPTER = int(input_chapter.text)
 	_load_chapter_view()
+	pass # Replace with function body.
+
+
+func _on_btn_swap_pressed():
+	$"../../Popups-notif/Swap_warning/chapter_select/btn_swap_close".visible = false
+	$"../../Popups-notif/Swap_warning".visible = true
+	$"../Control_zone/btn_swap".visible = false
+	$"../../Popups-notif/Swap_warning/chapter_select/MarginContainer/Tip".text = default_warning_text
+	
+	await get_tree().create_timer(1.0).timeout
+	
+	var level_a = int($"../Control_zone/chapter_select/label_swap_level/level_a".text)
+	var level_b = int($"../Control_zone/chapter_select/label_swap_level/level_b".text)
+	
+	LIST_LEVEL = DATA_BOARD["ListLevelsInChapter"]
+	
+	_swap_level(level_a, level_b)
+	_load_chapter_view()
+	
+	$"../Control_zone/btn_swap".visible = true
+	$"../../Popups-notif/Swap_warning/chapter_select/MarginContainer/Tip".text += default_ok_text
+	$"../../Popups-notif/Swap_warning/chapter_select/btn_swap_close".visible = true
 	pass # Replace with function body.

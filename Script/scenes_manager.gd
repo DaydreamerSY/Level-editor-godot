@@ -151,9 +151,10 @@ func _on_check_box_edit_border_pressed():
 
 
 
-func _on_texture_button_toggled(button_pressed):
+func _on_view_mode_toggled(button_pressed):
 	if button_pressed:
 		view_mode.visible = true
+		$"Popups-notif/Swap_warning".visible = true
 		$Edit_chapter_mode/Chapter_view._load_chapter_view()
 		
 		edit_mode.visible = false
@@ -182,4 +183,9 @@ func _on_edit_mode_pressed():
 	$Edit_mode/Control_zone/chapter_select/label_chapter/selected_chapter.text = $Playtest_mode/Control_zone/chapter_select/label_chapter/selected_chapter.text
 	$Edit_mode/Control_zone/chapter_select/label_level/selected_level.text = $Playtest_mode/Control_zone/chapter_select/label_level/selected_level.text
 	$Edit_mode/Edit_zone._on_btn_load_pressed()
+	pass # Replace with function body.
+
+
+func _on_btn_swap_close_pressed():
+	$"Popups-notif/Swap_warning".visible = false
 	pass # Replace with function body.
