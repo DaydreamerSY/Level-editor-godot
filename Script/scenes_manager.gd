@@ -161,7 +161,8 @@ func _on_update_pressed():
 	popup_text.text = ""
 	
 	for i in output:
-		label_warning.text += "- %s" % [i]
+		if not i == "":
+			label_warning.text += "- %s\n" % [i]
 
 	popup_tip.visible = true
 	print(output)
