@@ -211,6 +211,8 @@ func _on_btn_swap_pressed():
 	$"../../Popups-notif/Swap_warning".visible = true
 	$"../Control_zone/btn_swap".visible = false
 	$"../../Popups-notif/Swap_warning/chapter_select/MarginContainer/Tip".text = default_warning_text
+	$"../../Help_screen".visible = false
+	$"../../Setting_screen".visible = false
 	
 	await get_tree().create_timer(1.0).timeout
 	
