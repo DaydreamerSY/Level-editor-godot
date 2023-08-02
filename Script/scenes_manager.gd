@@ -139,16 +139,17 @@ func _on_update_pressed():
 	var popup_text = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning"
 	var popup_tip = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Tip"
 	
-	$"../../Help_screen".visible = false
-	$"../../Setting_screen".visible = false
-	$"../../Chapter_screen".visible = false
-	
-	popup_update_warning.visible = true
-	popup_tip.visible = false
-	
+
 	$Edit_mode.visible = false
 	$Playtest_mode.visible = false
 	$Edit_chapter_mode.visible = false
+	$Help_screen.visible = false
+	$Setting_screen.visible = false
+	$Chapter_screen.visible = false
+	
+	popup_update_warning.visible = true
+	popup_tip.visible = false
+
 	
 	popup_text.text = default_text
 	await get_tree().create_timer(0.5).timeout
