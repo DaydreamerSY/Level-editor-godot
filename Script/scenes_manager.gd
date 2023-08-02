@@ -133,14 +133,23 @@ func _on_check_box_flip_h_2_pressed():
 
 
 func _on_update_pressed():
+	var default_text = "Updating..."
 	var label_warning = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning"
 	var popup_update_warning = $"Popups-notif/Update_warning"
+	popup_update_warning.visible = true
+	
+	$Edit_mode.visible = false
+	$Playtest_mode.visible = false
+	$Edit_chapter_mode.visible = false
+	
+	$"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning".text = "Updating..."
+	
 	var output = []
 	OS.execute("git", ["fetch"], output)
 	OS.execute("git", ["reset", "--hard", "origin"], output)
 	for i in output:
 		label_warning.text += "- %s" % [i]
-	popup_update_warning.visible = true
+
 	print(output)
 
 
