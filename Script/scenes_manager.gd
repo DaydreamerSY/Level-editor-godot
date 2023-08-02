@@ -139,6 +139,10 @@ func _on_update_pressed():
 	var popup_text = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning"
 	var popup_tip = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Tip"
 	
+	$"../../Help_screen".visible = false
+	$"../../Setting_screen".visible = false
+	$"../../Chapter_screen".visible = false
+	
 	popup_update_warning.visible = true
 	popup_tip.visible = false
 	
