@@ -136,20 +136,29 @@ func _on_update_pressed():
 	var default_text = "Updating..."
 	var label_warning = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning"
 	var popup_update_warning = $"Popups-notif/Update_warning"
+	var popup_text = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning"
+	var popup_tip = $"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Tip"
+	
 	popup_update_warning.visible = true
+	popup_tip.visible = false
 	
 	$Edit_mode.visible = false
 	$Playtest_mode.visible = false
 	$Edit_chapter_mode.visible = false
 	
-	$"Popups-notif/Update_warning/chapter_select/MarginContainer/GridContainer/Warning".text = "Updating..."
+	popup_text.text = default_text
+	await get_tree().create_timer(0.5).timeout
 	
 	var output = []
 	OS.execute("git", ["fetch"], output)
 	OS.execute("git", ["reset", "--hard", "origin"], output)
+	
+	popup_text.text = ""
+	
 	for i in output:
 		label_warning.text += "- %s" % [i]
 
+	popup_tip.visible = true
 	print(output)
 
 
