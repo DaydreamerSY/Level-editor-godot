@@ -213,3 +213,4 @@ func _on_edit_mode_pressed():
 func _on_btn_swap_close_pressed():
 	$"Popups-notif/Swap_warning".visible = false
 	pass # Replace with function body.
+
