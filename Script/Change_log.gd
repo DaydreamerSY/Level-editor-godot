@@ -19,6 +19,19 @@ func _on_btn_version_toggled(button_pressed):
 	
 	self.visible = button_pressed
 	
+	for i in scroll_view.get_children():
+		i.queue_free()
+		
+	var _checking_label = Label.new()
+	_checking_label.text = "%s" % "Cheking, please wait..."
+	_checking_label.size = Vector2(1100, 50)
+	_checking_label.set("theme_override_fonts/font", load("res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf"))
+	_checking_label.set("theme_override_font_sizes/font_size", 40)
+	_checking_label.set("theme_override_colors/font_color", Color.html("#741e19"))
+	scroll_view.add_child(_checking_label)
+	
+	await get_tree().create_timer(1.0).timeout
+	
 	if not button_pressed:
 		return
 	
@@ -26,9 +39,7 @@ func _on_btn_version_toggled(button_pressed):
 		i.queue_free()
 	
 	var output = []
-	
-	var base_app = "git"
-#	var params = "log --invert-grep --grep=\"test\" --pretty=format:\"%ad|%s\" --date=short"
+	OS.execute("git", ["fetch"])
 	OS.execute("git", ["log", "--invert-grep", "--grep=\"test\"", "--grep=\"Merge\"", "--pretty=format:%D  %ad  %s", "--date=short"], output)
 #	print(params.split(" "))
 #	OS.execute(base_app, params.split(" "), output)
@@ -52,6 +63,7 @@ func _on_btn_version_toggled(button_pressed):
 		message += i
 		message = message.replace("HEAD -> main, ", "")
 		message = message.replace(", origin/main, origin/HEAD", "")
+		message = message.replace(" origin/main, origin/HEAD", "")
 		message = message.replace("tag:", "Ver:")
 			
 		

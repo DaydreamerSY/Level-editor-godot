@@ -145,7 +145,7 @@ func _on_update_pressed():
 	$Edit_chapter_mode.visible = false
 	$Help_screen.visible = false
 	$Setting_screen.visible = false
-	$Chapter_screen.visible = false
+	$Fixed_buttons.visible = false
 	
 	popup_update_warning.visible = true
 	popup_tip.visible = false
