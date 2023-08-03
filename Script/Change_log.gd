@@ -26,31 +26,37 @@ func _on_btn_version_toggled(button_pressed):
 		i.queue_free()
 	
 	var output = []
-	OS.execute("git", ["log", "-5"], output)
+	
+	var base_app = "git"
+#	var params = "log --invert-grep --grep=\"test\" --pretty=format:\"%ad|%s\" --date=short"
+	OS.execute("git", ["log", "--invert-grep", "--grep=\"test\"", "--grep=\"Merge\"", "--pretty=format:%ad | %s", "--date=short"], output)
+#	print(params.split(" "))
+#	OS.execute(base_app, params.split(" "), output)
 	
 	var log = output[0].split("\n")
 
-	var counter = 0
 	var _temp = ""
 	var _output_line = []
+	
 	for i in range(len(log)):
-		if counter >= 5:
-			print(_temp)
-			_output_line.append(_temp)
-			_temp = ""
-			counter = 0
-		else:
-			_temp += log[i]
-			counter += 1
+		_temp = log[i]
+		print(_temp)
 
-	for i in _output_line:
-		if not i == "":
-			var _label = Label.new()
-			_label.text = "- %s" % [i]
-			_label.size = Vector2(1100, 50)
-			_label.set("theme_override_fonts/font", load("res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf"))
-			_label.set("theme_override_font_sizes/font_size", 40)
-			scroll_view.add_child(_label)
+	for i in log:
+		var _label = Label.new()
+		_label.text = "%s" % [i]
+		_label.size = Vector2(1100, 50)
+		_label.set("theme_override_fonts/font", load("res://GAME ASSETS/v.0.1/Action Phase/MilkyNice.ttf"))
+		_label.set("theme_override_font_sizes/font_size", 40)
+		_label.set("autowrap_mode", "word")
+		_label.set("theme_override_colors/font_color", Color.html("#741e19"))
+		scroll_view.add_child(_label)
 			
 	print("done")
+	pass # Replace with function body.
+
+
+func _on_btn_version_close_pressed():
+	self.visible = false
+	$"../../Fixed_buttons/btn_version".set ("button_pressed", false)
 	pass # Replace with function body.
