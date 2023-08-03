@@ -38,7 +38,6 @@ func _ready():
 	
 	input_chapter = $"../Control_zone/chapter_select/label_chapter/selected_chapter"
 	scroll_container = $MarginContainer/ScrollContainer/VBoxContainer
-	
 	pass # Replace with function body.
 
 

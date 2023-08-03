@@ -45,18 +45,18 @@ func _on_btn_version_toggled(button_pressed):
 		
 		if "tag" in i:
 			is_tag = true
-			message += i
-			message = message.replace("HEAD -> main, ", "")
-			message = message.replace(", origin/main, origin/HEAD", "")
-			message = message.replace("tag:", "Ver:")
 		else:
 			is_tag = false
 			message += "          |- "
-			message += i
+		
+		message += i
+		message = message.replace("HEAD -> main, ", "")
+		message = message.replace(", origin/main, origin/HEAD", "")
+		message = message.replace("tag:", "Ver:")
 			
 		
 		
-		print(message)
+#		print(message)
 			
 		var _label = Label.new()
 		_label.text = "%s" % message
