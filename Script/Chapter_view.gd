@@ -149,13 +149,6 @@ func _swap_level(a, b):
 	_save_database(SELECTED_CHAPTER)
 	_save_data_to_csv()
 	
-#	print("swapped")
-#	print(CSV_DATA[a])
-#	print(CSV_DATA[b])
-#	save to file test but load in orginal file so it caused error
-	
-#	DATA_BOARD["ListLevelsInChapter"][int(fmod(SELECTED_LEVEL , 100))]
-	
 	return [a, b]
 
 

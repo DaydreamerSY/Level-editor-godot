@@ -51,11 +51,23 @@ func _on_btn_version_toggled(button_pressed):
 
 	var is_tag = false
 	
+	var is_current_ver = true
+	var is_first_line = true
+	
 	for i in log:
 		var message = ""
 		
+		if is_first_line:
+			is_first_line = false
+			if "tag" in i:
+				message += "(New) "
+		
 		if "tag" in i:
 			is_tag = true
+			
+			if is_current_ver and not is_first_line:
+				message += "(Current) "
+				is_current_ver = false
 		else:
 			is_tag = false
 			message += "          |- "
