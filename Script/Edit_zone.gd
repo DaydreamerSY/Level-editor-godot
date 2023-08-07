@@ -1030,3 +1030,4 @@ func _on_btn_hide_pressed():
 			SETTING["animationSpeed"]
 		)
 	pass # Replace with function body.
+

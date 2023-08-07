@@ -58,7 +58,7 @@ func _process(delta):
 
 func _create_change_wallpaper():
 	var dir = DirAccess.open(PATH_BACKGROUND_IMG)
-	print(dir.get_files())
+#	print(dir.get_files())
 	
 	setting_wallpaper_dropdown.add_item("Default")
 	
@@ -70,7 +70,7 @@ func _create_change_wallpaper():
 
 func _create_change_livewallpaper():
 	var dir = DirAccess.open(PATH_BACKGROUND_OGV)
-	print(dir.get_files())
+#	print(dir.get_files())
 	
 	setting_livewallpaper_dropdown.add_item("None")
 	setting_livewallpaper_dropdown.add_item("Default")
@@ -165,7 +165,7 @@ func _on_update_pressed():
 			label_warning.text += "- %s\n" % [i]
 
 	popup_tip.visible = true
-	print(output)
+#	print(output)
 
 
 func _on_check_box_edit_border_pressed():

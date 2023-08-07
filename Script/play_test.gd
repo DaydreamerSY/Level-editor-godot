@@ -132,8 +132,12 @@ var time_state
 var swipe_block_pos = []
 
 
+var console_input
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	console_input = $"../Fixed_nodes/type_with_out_swipe"
+	console_input.visible = false
 	
 	Background = $Background
 	Frontground = $Frontground
@@ -169,6 +173,8 @@ func _ready():
 	
 	Background.visible = SETTING["showBackground"]
 
+	var _temp = (LEVEL_EDIT_SIZE / 2) * SETTING["letterSize"]["background"].x 
+	center.position.x = 10 * 30
 
 	pass # Replace with function body.
 
@@ -204,8 +210,14 @@ func _process(delta):
 
 func _input( event ):
 	
-	if Input.is_action_pressed("ui_right"):
+	if Input.is_action_pressed("keyboard_rotate"):
 		_on_btn_load_pressed()
+		
+	if Input.is_action_just_pressed("enable_console"):
+		console_input.visible = !console_input.visible
+		if console_input.visible:
+			console_input.grab_focus()
+			console_input.clear()
 	
 	if event is InputEventMouseButton:
 		if event.button_index == 1 and event.is_pressed():
@@ -1045,7 +1057,6 @@ func _on_booster_shuffle_pressed():
 			
 		rand_pos = temp_pos_list[randi() % temp_pos_list.size()]
 		temp_pos_list.erase(rand_pos)
-		print(len(temp_pos_list))
 		
 		tw.tween_property(
 			mob,
@@ -1130,7 +1141,12 @@ func _on_booster_hint_pressed():
 			list_of_unlock_answer[i] = true
 			if false not in list_of_unlock_answer:
 				is_time_started = false
-
+				
+	# 1. search through word_id in LIST_OF_BLOCK
+	# 2. create new list contain all unreveal word - this should be created when load level
+	# 3. pick random from above list
+	# 4. search through word_id again to trigger all crossed letter
+	# done - can reuse in firecracker
 
 func _on_booster_touch_pressed():
 	pass # Replace with function body.
@@ -1183,4 +1199,23 @@ func _on_btn_pasuse_toggled(button_pressed):
 		time_state.text = "Paused"
 	else:
 		time_state.text = "Playing..."
+	pass # Replace with function body.
+
+
+func _on_type_with_out_swipe_text_submitted(new_text):
+	print(new_text)
+	print(new_text.to_upper())
+	var _typed_word = new_text.to_upper()
+	
+	if _typed_word in LEVEL_N_WORDS:
+		var word_index = LEVEL_N_WORDS.find(_typed_word)
+		if list_of_unlock_answer[word_index]:
+			_show_already_found(_typed_word)
+		else:
+			_show_answer(word_index)
+	else:
+		_show_incorrect()
+		
+	console_input.clear()
+		
 	pass # Replace with function body.
