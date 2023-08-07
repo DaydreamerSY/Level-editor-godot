@@ -209,9 +209,6 @@ func _process(delta):
 
 
 func _input( event ):
-	
-	if Input.is_action_pressed("keyboard_rotate"):
-		_on_btn_load_pressed()
 		
 	if Input.is_action_just_pressed("enable_console"):
 		console_input.visible = !console_input.visible
