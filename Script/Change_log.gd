@@ -40,11 +40,11 @@ func _on_btn_version_toggled(button_pressed):
 	
 	var output = []
 	OS.execute("git", ["fetch"])
-	OS.execute("git", ["log", "--invert-grep", "--grep=\"test\"", "--grep=\"Merge\"", "--pretty=format:%D  %ad  %s", "--date=short"], output)
+	OS.execute("git", ["log", "--invert-grep", "--grep=\"Merge\"", "--pretty=format:%D  %ad  %s", "--date=short"], output)
 #	print(params.split(" "))
 #	OS.execute(base_app, params.split(" "), output)
 	
-	var log = output[0].split("\n")
+	var logger = output[0].split("\n")
 
 	var _temp = ""
 	var _output_line = []
@@ -54,7 +54,7 @@ func _on_btn_version_toggled(button_pressed):
 	var is_current_ver = true
 	var is_first_line = true
 	
-	for i in log:
+	for i in logger:
 		var message = ""
 		
 		if is_first_line:
