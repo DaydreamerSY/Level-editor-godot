@@ -2,6 +2,7 @@ extends TextureRect
 
 var letter
 var id
+var self_is_active = false
 
 signal you_are_hover_on(id)
 signal you_are_exit(id)
@@ -26,6 +27,7 @@ func _on_Area2D_mouse_exited():
 	you_are_exit.emit(id)
 
 func _set_active(is_active, type=1):
+	self_is_active = is_active
 	if is_active:
 		match type:
 			1:
@@ -37,3 +39,6 @@ func _set_active(is_active, type=1):
 		self.texture = load("res://GAME ASSETS/v.0.1/Action Phase/Block-type-active/Block_active_board.png")
 #		self.set("size", Vector2(50, 50))
 	pass
+
+func _is_active():
+	return self_is_active

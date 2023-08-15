@@ -136,7 +136,7 @@ var console_input
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	console_input = $"../Fixed_nodes/type_with_out_swipe"
+	console_input = $"../Fixed_nodes/console"
 	console_input.visible = false
 	
 	Background = $Background
@@ -208,13 +208,14 @@ func _process(delta):
 		time_display.text = str_elapsed
 
 
-func _input( event ):
+func _input(event):
 		
 	if Input.is_action_just_pressed("enable_console"):
 		console_input.visible = !console_input.visible
 		if console_input.visible:
-			console_input.grab_focus()
 			console_input.clear()
+			console_input.grab_focus()
+			
 	
 	if event is InputEventMouseButton:
 		if event.button_index == 1 and event.is_pressed():
@@ -225,36 +226,37 @@ func _input( event ):
 #			_play_sound("pick")
 		elif event.button_index == 1 and not event.is_pressed():
 			mouse_left_down = false
-			var answer_connected = "".join(connected_letters)
+			
+			_do_when_released_mouse_left()
 			
 
+func _do_when_released_mouse_left():
+	var answer_connected = "".join(connected_letters)
+	
+	if answer_connected in LEVEL_N_WORDS:
+		var word_index = LEVEL_N_WORDS.find(answer_connected)
+		if list_of_unlock_answer[word_index]:
+			_show_already_found(answer_connected)
+		else:
+			_show_answer(word_index)
+	else:
+		_show_incorrect()
+	
+	if is_dragging:
+		is_dragging = false
+		connected_id = []
+		connected_letters = []
+		connected_id_letters = {}
+		
+		was_added_or_removed = false
+		line.clear_points()
+		point_count = 0
+		
+		for i in list_of_swipe_block:
+			i._set_active(false)
 			
-			if answer_connected in LEVEL_N_WORDS:
-				var word_index = LEVEL_N_WORDS.find(answer_connected)
-				if list_of_unlock_answer[word_index]:
-					_show_already_found(answer_connected)
-				else:
-					_show_answer(word_index)
-			else:
-				_show_incorrect()
-			
-			if is_dragging:
-				is_dragging = false
-#				print(connected_id)
-#				print(connected_letters)
-				connected_id = []
-				connected_letters = []
-				connected_id_letters = {}
-				
-				was_added_or_removed = false
-				point_count = 0
-				
-				for i in list_of_swipe_block:
-					i._set_active(false)
-					
-				label_connected_word.text = ""
-				background_connected_word.visible = false
-				line.clear_points()
+		label_connected_word.text = ""
+		background_connected_word.visible = false
 
 
 func _show_already_found(answer):
@@ -1200,8 +1202,6 @@ func _on_btn_pasuse_toggled(button_pressed):
 
 
 func _on_type_with_out_swipe_text_submitted(new_text):
-	print(new_text)
-	print(new_text.to_upper())
 	var _typed_word = new_text.to_upper()
 	
 	if _typed_word in LEVEL_N_WORDS:
@@ -1214,5 +1214,29 @@ func _on_type_with_out_swipe_text_submitted(new_text):
 		_show_incorrect()
 		
 	console_input.clear()
+	point_count	= 0
+	line.clear_points()
 		
 	pass # Replace with function body.
+
+
+func _on_type_with_out_swipe_text_changed(new_text):
+	var new_text_upper = new_text.to_upper()
+	
+	if "`" in new_text_upper:
+		new_text_upper = new_text_upper.replace("`", "")
+		console_input.text = new_text_upper
+	
+	for i in list_of_swipe_block:
+		i._set_active(false)
+	
+	line.clear_points()
+	
+	for letter in new_text_upper:
+		for i in list_of_swipe_block:
+			if i.get_node("Letter").text == letter and not i._is_active():
+				i._set_active(true)
+				line.add_point(i.global_position + i.size / 2)
+				break
+
+
