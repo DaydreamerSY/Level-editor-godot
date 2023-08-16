@@ -1031,3 +1031,8 @@ func _on_btn_hide_pressed():
 		)
 	pass # Replace with function body.
 
+
+
+func _on_selected_level_text_submitted(new_text):
+	_on_btn_load_pressed()
+	pass # Replace with function body.

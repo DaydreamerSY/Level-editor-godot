@@ -1221,11 +1221,22 @@ func _on_type_with_out_swipe_text_submitted(new_text):
 
 
 func _on_type_with_out_swipe_text_changed(new_text):
+	
 	var new_text_upper = new_text.to_upper()
+	var caret_pos = console_input.caret_column
+	
+	console_input.text = new_text_upper
+	console_input.caret_column = caret_pos
+	
 	
 	if "`" in new_text_upper:
 		new_text_upper = new_text_upper.replace("`", "")
 		console_input.text = new_text_upper
+		
+	if new_text_upper.split()[-1] not in set_letter and len(new_text_upper) > 0:
+
+		console_input.text = new_text_upper.left(len(new_text_upper) - 1)
+		console_input.caret_column = caret_pos
 	
 	for i in list_of_swipe_block:
 		i._set_active(false)
@@ -1240,3 +1251,8 @@ func _on_type_with_out_swipe_text_changed(new_text):
 				break
 
 
+
+
+func _on_selected_level_text_submitted(new_text):
+	_on_btn_load_pressed()
+	pass # Replace with function body.
