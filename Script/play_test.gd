@@ -628,6 +628,16 @@ func _print_level_edit():
 #	print(INDEX_STORE)
 #	print(LEVEL_N_WORDS)
 
+	var cell_count = []
+
+	for i in INDEX_STORE:
+		for pos in INDEX_STORE[i]:
+			var _temp = [pos["c"], pos["r"]]
+			if _temp not in cell_count:
+				cell_count.append(_temp)
+
+	print("total cells of level %s: %s" % [SELECTED_LEVEL + 1, len(cell_count)])
+
 	for i in INDEX_STORE:
 		var pos_count = 0
 		LIST_OF_BLOCK[i] = []
