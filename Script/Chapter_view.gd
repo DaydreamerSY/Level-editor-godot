@@ -96,7 +96,8 @@ func _get_data_from_csv():
 		var csv_rows = file.get_csv_line(",") # I use tab as delimiter
 		csv.append(csv_rows)
 	file.close()
-	csv.pop_back() #remove last empty array get_csv_line() has created 
+	if csv[-1] == [""]:
+		csv.pop_back() #remove last empty array get_csv_line() has created 
 	HEADER = Array(csv[0])
 	
 	# get data without header
@@ -109,7 +110,7 @@ func _get_data_from_csv():
 	
 	CSV_DATA.append(HEADER)
 	
-	for i in range(len(csv_noheaders) + 1):
+	for i in range(len(csv_noheaders)):
 #		print(csv_noheaders[i - 2][column_name_id])
 #		i is row
 		LIST_WORDS.append(csv_noheaders[i][LEVEL_CONTENT_COL_ID])
